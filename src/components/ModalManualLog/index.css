@@ -1,0 +1,21 @@
+.icon-clean {
+  color: #fff;
+}
+
+.box--modal-buttons {
+  margin-top: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+}
+
+.button--clear-worklogs {
+  font-size: 12px !important;
+}
+
+.box--fields {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}

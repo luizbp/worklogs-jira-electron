@@ -1,0 +1,26 @@
+.App {
+  text-align: center;
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.swal2-modal {
+  font-size: 12px !important;
+}
+
+.swal2-icon {
+  margin: 15px auto;
+}
+
+.swal2-title {
+  padding-top: 0;
+}

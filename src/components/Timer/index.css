@@ -1,0 +1,97 @@
+.timer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  --color-first: #13c2c2;
+  --color-second: #ff4d4f;
+  --color-third: #797979;
+  --color-fourth: #fadb14;
+  --color-five: #282c34;
+}
+
+.number {
+  font-size: 35px;
+  display: flex;
+  flex-direction: column;
+  line-height: 1;
+}
+
+.miliseconds {
+  font-size: 20px;
+}
+
+.box-numbers {
+  display: flex;
+  align-items: baseline;
+}
+
+.description{
+  font-size: 20px;
+}
+
+.box--timer-controls {
+  display: flex;
+  margin-top: 20px;
+  border: none;
+  gap: 5px;
+}
+
+.box--timer-controls svg {
+  width: 30px;
+  height: 30px;
+}
+
+a.button--circle-primary, .color-primary {
+  color: var(--color-first);
+  transition: 0.1s;
+}
+
+.color-secundary {
+  color: var(--color-second);
+}
+
+.color-disabled {
+  color: var(--color-third) !important;
+  cursor: no-drop;
+}
+
+a.button--circle-secundary {
+  color: var(--color-fourth);
+  transition: 0.1s;
+}
+
+a.button--circle-primary:hover, a.button--circle-secundary:hover {
+  opacity: 0.8;
+  transition: 0.1s;
+}
+
+.box--buttons {
+  margin-top: 15px;
+}
+
+.button--primary {
+  background: var(--color-first);
+  padding: 8px 10px;
+  border-radius: 20px;
+  text-decoration: none;
+  color: var(--color-five);
+  font-weight: bold;
+  display: flex;
+  gap: 5px;
+  align-items: center;
+  justify-content: center;
+  transition: 0.1s;
+  font-size: 15px;
+}
+
+.button--primary:hover {
+  opacity: 0.8;
+  transition: 0.1s;
+}
+
+.button--primary svg {
+  color: var(--color-five);
+  width: 20px;
+  height: 20px;
+}

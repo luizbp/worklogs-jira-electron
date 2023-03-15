@@ -1,0 +1,14 @@
+.icon-clean {
+  color: #fff;
+}
+
+.box--modal-buttons {
+  margin-top: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.button--clear-worklogs {
+  font-size: 12px !important;
+}

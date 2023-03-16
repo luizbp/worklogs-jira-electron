@@ -87,7 +87,10 @@ export const TaskInfoForm = ({
               })
             }
             options={optionsTask}
-            value={task}
+            value={task ? {
+              value: task.value.toUpperCase(),
+              label: task.label.toUpperCase(),
+            } : null}
           />
           <BsFillXCircleFill
             className="button--clear"

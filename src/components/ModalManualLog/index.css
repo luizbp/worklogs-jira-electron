@@ -1,5 +1,5 @@
 .icon-clean {
-  color: #fff;
+  color: var(--color-six);
 }
 
 .box--modal-buttons {

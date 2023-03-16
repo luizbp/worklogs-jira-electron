@@ -1,3 +1,12 @@
+body {
+  --color-first: #08979c;
+  --color-second: #ff4d4f;
+  --color-third: #797979;
+  --color-fourth: #fadb14;
+  --color-five: #282c34;
+  --color-six: #FFF;
+}
+
 .App {
   text-align: center;
 }

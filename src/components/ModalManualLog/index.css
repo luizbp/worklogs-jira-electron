@@ -10,9 +10,24 @@
   gap: 5px;
 }
 
-.button--clear-worklogs {
+.button--clear-worklogs, .button--clear-worklogs:hover {
   font-size: 12px !important;
+  background: var(--color-first) !important;
+  transition: 0.1s;
 }
+
+.button--cancel-worklogs, .button--cancel-worklogs:hover {
+  font-size: 12px !important;
+  background: var(--color-second) !important;
+  transition: 0.1s;
+}
+
+.button--cancel-worklogs:hover,
+.button--clear-worklogs:hover {
+  opacity: 0.8;
+  transition: 0.1;
+}
+
 
 .box--fields {
   display: flex;

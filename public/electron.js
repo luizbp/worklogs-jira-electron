@@ -5,12 +5,12 @@ const isDev = require("electron-is-dev");
 
 const createWindow = () => {
   const win = new BrowserWindow({
-    width: 400,
+    width: 500,
     height: 550,
     minWidth: 300,
     minHeight: 550,
-    maxWidth: 550,
-    maxHeight: 600,
+    maxWidth: 800,
+    maxHeight: 800,
     alwaysOnTop: true,
     minimizable: true,
     maximizable: false

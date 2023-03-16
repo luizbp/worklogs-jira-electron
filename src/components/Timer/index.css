@@ -2,12 +2,6 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-
-  --color-first: #13c2c2;
-  --color-second: #ff4d4f;
-  --color-third: #797979;
-  --color-fourth: #fadb14;
-  --color-five: #282c34;
 }
 
 .number {
@@ -75,7 +69,7 @@ a.button--circle-primary:hover, a.button--circle-secundary:hover {
   padding: 8px 10px;
   border-radius: 20px;
   text-decoration: none;
-  color: var(--color-five);
+  color: var(--color-six);
   font-weight: bold;
   display: flex;
   gap: 5px;
@@ -91,7 +85,7 @@ a.button--circle-primary:hover, a.button--circle-secundary:hover {
 }
 
 .button--primary svg {
-  color: var(--color-five);
+  color: var(--color-six);
   width: 20px;
   height: 20px;
 }

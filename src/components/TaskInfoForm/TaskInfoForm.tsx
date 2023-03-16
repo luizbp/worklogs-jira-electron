@@ -5,9 +5,10 @@ import "./index.css";
 
 import { useEffect, useState } from "react";
 import CreatableSelect from "react-select/creatable";
-import type {Option} from '../../types/Option'
+import type { Option } from "../../types/Option";
 import { BsFillXCircleFill } from "react-icons/bs";
-
+import { formDataController } from "../../services/SaveDataLocal/formDataController";
+import type { FormData } from "../../types/FormData";
 
 type TaskInfoFormParams = {
   task: Option | null | undefined;
@@ -26,52 +27,44 @@ export const TaskInfoForm = ({
   const [optionsDescription, setOptionsDescription] = useState([]);
 
   const getData = async () => {
-    const defaultTasks = localStorage.getItem("task");
-    const defaultDescriptions = localStorage.getItem("description");
+    const defaultTasks = formDataController("task").get();
+    const defaultDescriptions = formDataController("description").get();
 
-    setOptionsTask(defaultTasks ? JSON.parse(defaultTasks) : []);
-    setOptionsDescription(defaultDescriptions ? JSON.parse(defaultDescriptions) : []);
+    setOptionsTask(defaultTasks);
+    setOptionsDescription(defaultDescriptions);
   };
 
-  const addData = (type: "task" | "description", newItem: Option) => {
-    const currentData = localStorage.getItem(type);
-    const options: Option[] = currentData ? JSON.parse(currentData) : [];
+  const addData = (type: FormData, newItem: Option) => {
+    formDataController(type).save(newItem);
 
-    options.push(newItem);
-    localStorage.setItem(type, JSON.stringify(options));
+    if (type === "task") setTask(newItem);
+    else setDescription(newItem);
 
-    if (type === "task") {
-      setTask(newItem);
-      return;
-    }
-
-    setDescription(newItem);
-    getData()
+    getData();
   };
 
-  const clearData = (type: "task" | "description") => {
-    localStorage.setItem(type, JSON.stringify([]));
-
+  const clearData = (type: FormData) => {
     Swal.fire({
       title: "Attention",
-      text: `Clear all saved ${type === 'task' ? 'tasks' : 'descriptions'}`,
+      text: `Clear all saved ${type === "task" ? "tasks" : "descriptions"}`,
       showCancelButton: true,
       confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Clean"
+      cancelButtonColor: "#08979c",
+      confirmButtonText: "Clean",
     }).then((result) => {
       if (result.isConfirmed) {
+        formDataController(type).clear();
+        
         if (type === "task") setTask(null);
         else setDescription(null);
 
-        getData()
+        getData();
 
         Swal.fire({
           icon: "success",
         });
       }
     });
-
   };
 
   useEffect(() => {
@@ -96,7 +89,11 @@ export const TaskInfoForm = ({
             options={optionsTask}
             value={task}
           />
-          <BsFillXCircleFill className="button--clear" title="Clear saved tasks" onClick={() => clearData('task')}/>
+          <BsFillXCircleFill
+            className="button--clear"
+            title="Clear saved tasks"
+            onClick={() => clearData("task")}
+          />
         </div>
       </div>
       <div className="select-description">
@@ -115,7 +112,11 @@ export const TaskInfoForm = ({
             options={optionsDescription}
             value={description}
           />
-          <BsFillXCircleFill className="button--clear" title="Clear saved descriptions" onClick={() => clearData('description')}/>
+          <BsFillXCircleFill
+            className="button--clear"
+            title="Clear saved descriptions"
+            onClick={() => clearData("description")}
+          />
         </div>
       </div>
     </div>

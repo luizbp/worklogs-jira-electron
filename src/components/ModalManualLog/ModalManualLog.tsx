@@ -7,7 +7,7 @@ import "./index.css";
 import TextField from "@mui/material/TextField";
 import { useState } from "react";
 import Swal from "sweetalert2";
-import { WorkLog } from "../../types/WorkLogs";
+import { workLogsController } from "../../services/SaveDataLocal/workLogsController";
 
 const styleBoxModal = {
   position: "absolute" as "absolute",
@@ -31,14 +31,14 @@ const styleModal = {
 
 type ModalWorkLogsParams = {
   open: boolean;
-  handleClose: any;
-  saveWorkLog: (newItem: WorkLog) => any;
+  handleClose: any
+  getData: () => any
 };
 
 export const ModalManualLog = ({
   handleClose,
   open,
-  saveWorkLog,
+  getData
 }: ModalWorkLogsParams) => {
   const [startDate, setStartDate] = useState("");
   const [task, setTask] = useState("");
@@ -53,25 +53,35 @@ export const ModalManualLog = ({
   };
 
   const save = () => {
+    const dateFormated = new Date(startDate).toLocaleString()
+
     Swal.fire({
       title: "Save Worklog",
       html: `Time: <b>"${time}"</b><br> 
              Task: <b>"${task}"</b><br> 
              Description: <b>"${description}"</b>
-             Start Date: <b>"${startDate}"</b><br> 
+             Start Date: <b>"${dateFormated}"</b><br> 
              `,
       showCancelButton: true,
       confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
+      cancelButtonColor: "#08979c",
       confirmButtonText: "Save",
     }).then((result) => {
       if (result.isConfirmed) {
-        saveWorkLog({
-          startDate,
-          description,
-          task,
-          time,
+
+        const workLog = workLogsController();
+
+        workLog.save({
+          newItem: {
+            id: Date.now().toString(),
+            startDate: dateFormated,
+            description,
+            task,
+            time,
+          }
         });
+
+        getData()
 
         Swal.fire({
           title: "Saved successfully!",
@@ -108,7 +118,7 @@ export const ModalManualLog = ({
               onChange={({ target: { value } }) => setStartDate(value)}
               fullWidth
               id="startDate"
-              type={"date"}
+              type={"datetime-local"}
             />
           </div>
           <div>
@@ -157,7 +167,7 @@ export const ModalManualLog = ({
               clearFields();
               handleClose();
             }}
-            className="button--clear-worklogs"
+            className="button--cancel-worklogs"
           >
             Cancel
           </Button>

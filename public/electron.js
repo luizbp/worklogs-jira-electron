@@ -17,6 +17,8 @@ const createWindow = () => {
     icon: `${__dirname}/logo192.png`
   });
 
+  win.setMenuBarVisibility(isDev)
+
   win.loadURL(
     isDev
       ? "http://localhost:3000/"

@@ -91,19 +91,14 @@ export const Timer = ({ description, task }: TimerParams) => {
       showCancelButton: true,
       confirmButtonColor: "#08979c",
       cancelButtonColor: "#ff4d4f",
-      confirmButtonText: "Save",
+      confirmButtonText: "Delete",
     }).then((result) => {
       if (result.isConfirmed) {
-        workLogsController().remove(id)
-        getWorkLog()
-
-        Swal.fire({
-          icon: "success",
-        });
-        handleReset();
+        workLogsController().remove(id);
+        getWorkLog();
       }
     });
-  }
+  };
 
   const validateFields = (): boolean => {
     if (!task) {
@@ -127,19 +122,18 @@ export const Timer = ({ description, task }: TimerParams) => {
     return true;
   };
 
-  const handleStarPauseResume = () => {
+  const handleStarPauseResume = (pIsPaused?:boolean) => {
     if (!validateFields()) return;
 
     if (time === 0) {
       setIsActive(true);
       setIsPaused(false);
-      setTime(60000);
 
       setStartDate(new Date().toLocaleString());
 
       return;
     }
-    setIsPaused(!isPaused);
+    setIsPaused(pIsPaused || !isPaused);
   };
 
   const handleReset = () => {
@@ -147,17 +141,36 @@ export const Timer = ({ description, task }: TimerParams) => {
     setTime(0);
   };
 
-  const handleStop = () => {
+  const handleStop = async () => {
     if (!time) return;
 
     if (!validateFields()) return;
 
-    const completTime = `${Math.floor((time / 3600000) % 60)}h ${Math.floor(
-      (time / 60000) % 60
-    )}m`;
-    handleStarPauseResume();
+    const hour = Math.floor((time / 3600000) % 60);
+    const min = Math.floor((time / 60000) % 60);
 
-    Swal.fire({
+    handleStarPauseResume(true);
+
+    if(!hour && !min) {
+      const result = await Swal.fire({
+        title: "Attention",
+        text: `Insufficient amount of time Want to reset the timer?`,
+        showCancelButton: true,
+        confirmButtonColor: "#08979c",
+        cancelButtonColor: "#ff4d4f",
+        confirmButtonText: "Reset",
+      })
+
+      if (result.isConfirmed) {
+        handleReset();
+      }
+
+      return
+    }
+
+    const completTime = `${hour}h ${min}m`;
+
+    const result = await Swal.fire({
       title: "Save Worklog",
       html: `Time: <b>"${completTime}"</b><br> 
              Task: <b>"${task?.value}"</b><br> 
@@ -166,28 +179,28 @@ export const Timer = ({ description, task }: TimerParams) => {
       confirmButtonColor: "#08979c",
       cancelButtonColor: "#ff4d4f",
       confirmButtonText: "Save",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        const workLog = workLogsController();
+    })
 
-        workLog.save({
-          newItem: {
-            id: Date.now().toString(),
-            startDate: startDate,
-            description: description?.value || "",
-            task: task?.value || "",
-            time: completTime,
-          },
-        });
+    if (result.isConfirmed) {
+      const workLog = workLogsController();
 
-        getWorkLog();
+      workLog.save({
+        newItem: {
+          id: Date.now().toString(),
+          startDate: startDate,
+          description: description?.value || "",
+          task: task?.value || "",
+          time: completTime,
+        },
+      });
 
-        Swal.fire({
-          icon: "success",
-        });
-        handleReset();
-      }
-    });
+      getWorkLog();
+
+      Swal.fire({
+        icon: "success",
+      });
+      handleReset();
+    }
   };
 
   return (
@@ -245,8 +258,8 @@ export const Timer = ({ description, task }: TimerParams) => {
           id="button-pause"
           href="#"
           title={"Finalizar"}
-          onClick={() => {
-            handleStop();
+          onClick={async () => {
+            await handleStop();
           }}
         >
           <BsFillStopCircleFill />

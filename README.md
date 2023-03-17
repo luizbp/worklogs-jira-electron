@@ -9,8 +9,9 @@ Worklogs Jira
 O projeto é um MVP, temos algumas melhorias sugeridas para serem implementadas e os problemas já mapeados:
 
 ### **Problemas**
- - Nenhuma mapeada por enquanto;
+- [x] Quando minimiza a janela o timer para de contar - Corrigido na [Issue](https://github.com/luizbp/clockwork-jira-electron/issues/3)
 ### **Melhorias**
+- [x] Ao invés de deletar todas as tarefas e descrições salvas, deletar a que esta selecionada - Implementado na [Issue](https://github.com/luizbp/clockwork-jira-electron/issues/3)
 - [ ] Integrar com API do Jira para o apontamento ser feito automaticamente
 - [ ] Colocar forma de exportar relatório para Excel
 - [ ] Melhorar a forma que é salvo os dados para uma melhor percistencia de dados

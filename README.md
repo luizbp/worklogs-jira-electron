@@ -1,46 +1,59 @@
-# Getting Started with Create React App
+<h1 align="center">
+Worklogs Jira
+</h1>
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+<p align="center">Aplicação desenvolvida para auxiliar no crontrole de tempo gasto em cada tarefa do Jira, tendo uma agilidade maior para trabalhar durante o dia para fazer os lançamento apenas no final do dia.</p>
 
-## Available Scripts
+## 🧰 Ajustes e melhorias
 
-In the project directory, you can run:
+O projeto é um MVP, temos algumas melhorias sugeridas para serem implementadas e os problemas já mapeados:
 
-### `yarn start`
+### **Problemas**
+ - Nenhuma mapeada por enquanto;
+### **Melhorias**
+- [ ] Integrar com API do Jira para o apontamento ser feito automaticamente
+- [ ] Colocar forma de exportar relatório para Excel
+- [ ] Melhorar a forma que é salvo os dados para uma melhor percistencia de dados
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+## 📋 Pré-requisitos
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+Antes de começar, verifique se você atendeu aos seguintes requisitos:
+* Você instalou a versão mais recente do `GIT`
+* Você instalou a versão mais recente do `Node.js`
 
-### `yarn test`
+## 💻 Baixando e instalando Worklogs Jira
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+Baixe a versão desejada do aplicativo:
+- [Worklogs Jira Setup 0.1.0](https://1drv.ms/u/s!Av3PhCVdQ30ghppjDEpHypu0iK0OlQ?e=kOLEuE)
 
-### `yarn build`
+Depois basta descompatar o arquivo `.rar` e executar o arquivo `Worklogs Jira Setup x.x.x.exe`
+## 📫 Contribuindo para Worklogs Jira
+Para contribuir com o projeto, siga estas etapas:
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+1. Bifurque este repositório.
+2. Crie um branch: `git checkout -b <nome_branch>`.
+3. Faça suas alterações e confirme-as: `git commit -m '<mensagem_commit>'`
+4. Envie para o branch original: `git push origin <nome_do_projeto> / <local>`
+5. Crie a solicitação de pull.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+Como alternativa, consulte a documentação do GitHub em [como criar uma solicitação pull](https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/creating-a-pull-request).
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## 🤝 Colaboradores
 
-### `yarn eject`
+Agradecemos às seguintes pessoas que contribuíram para este projeto:
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+<table>
+  <tr>
+    <td align="center">
+      <a href="https://github.com/luizbpacct" target="_blank" title="Luiz Carlos B Pereira">
+        <img src="https://avatars.githubusercontent.com/u/115479427" width="50px;" style="border-radius: 100%;" alt="Luiz Carlos B Pereira"/><br>
+      </a>
+    </td>
+  </tr>
+</table>
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## 📝 Licença
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+Esse projeto está sob licença. Veja o arquivo [LICENÇA](LICENSE.md) para mais detalhes.
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+[⬆ Voltar ao topo](#worklogs-jira)<br>

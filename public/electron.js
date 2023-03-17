@@ -9,11 +9,12 @@ const createWindow = () => {
     height: 550,
     minWidth: 300,
     minHeight: 550,
-    maxWidth: 800,
-    maxHeight: 800,
+    // maxWidth: 800,
+    // maxHeight: 800,
     alwaysOnTop: true,
     minimizable: true,
-    maximizable: false
+    maximizable: false,
+    icon: `${__dirname}/logo192.png`
   });
 
   win.loadURL(

@@ -16,7 +16,7 @@ const styleBoxModal = {
   bgcolor: "background.paper",
   border: "2px solid #000",
   boxShadow: 24,
-  "max-width": "600px",
+  "max-width": "800px",
   pt: 2,
   px: 4,
   pb: 3,

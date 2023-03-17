@@ -24,7 +24,7 @@ Antes de começar, verifique se você atendeu aos seguintes requisitos:
 ## 💻 Baixando e instalando Worklogs Jira
 
 Baixe a versão desejada do aplicativo:
-- [Worklogs Jira Setup 0.1.0](https://1drv.ms/u/s!Av3PhCVdQ30ghppjDEpHypu0iK0OlQ?e=kOLEuE)
+- [Worklogs Jira Setup 0.1.0](https://1drv.ms/u/s!Av3PhCVdQ30ghppp3PS7jStFZ5PXdQ?e=SbCxdT)
 
 Depois basta descompatar o arquivo `.rar` e executar o arquivo `Worklogs Jira Setup x.x.x.exe`
 ## 📫 Contribuindo para Worklogs Jira

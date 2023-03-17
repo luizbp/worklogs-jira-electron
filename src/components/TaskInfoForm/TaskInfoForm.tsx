@@ -48,8 +48,8 @@ export const TaskInfoForm = ({
       title: "Attention",
       text: `Clear all saved ${type === "task" ? "tasks" : "descriptions"}`,
       showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#08979c",
+      confirmButtonColor: "#08979c",
+      cancelButtonColor: "#ff4d4f",
       confirmButtonText: "Clean",
     }).then((result) => {
       if (result.isConfirmed) {

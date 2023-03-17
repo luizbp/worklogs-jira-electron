@@ -133,7 +133,6 @@ export const Timer = ({ description, task }: TimerParams) => {
     if (time === 0) {
       setIsActive(true);
       setIsPaused(false);
-      setTime(60000);
 
       setStartDate(new Date().toLocaleString());
 

@@ -21,10 +21,12 @@ Antes de começar, verifique se você atendeu aos seguintes requisitos:
 * Você instalou a versão mais recente do `GIT`
 * Você instalou a versão mais recente do `Node.js`
 
-## 💻 Instalando Worklogs Jira
+## 💻 Baixando e instalando Worklogs Jira
 
-Temos uma Pasta com a aplicação com versões já compilada para instalar no Windows, basta acessar a pasta `./installers/windows/`
+Baixe a versão desejada do aplicativo:
+- [Worklogs Jira Setup 0.1.0](https://1drv.ms/u/s!Av3PhCVdQ30ghppjDEpHypu0iK0OlQ?e=kOLEuE)
 
+Depois basta descompatar o arquivo `.rar` e executar o arquivo `Worklogs Jira Setup x.x.x.exe`
 ## 📫 Contribuindo para Worklogs Jira
 Para contribuir com o projeto, siga estas etapas:
 

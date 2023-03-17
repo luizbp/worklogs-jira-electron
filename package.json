@@ -1,5 +1,5 @@
 {
-  "name": "my-app",
+  "name": "WorkLogsJira",
   "version": "0.1.0",
   "private": true,
   "main": "public/electron.js",
@@ -8,7 +8,7 @@
     "name": "Luiz Carlos B Pereira",
     "email": "luiz.bpereira@outlook.com"
   },
-  "description": "Hello World Electron",
+  "description": "Worklogs Jira",
   "dependencies": {
     "@emotion/react": "^11.10.6",
     "@emotion/styled": "^11.10.6",
@@ -42,8 +42,8 @@
     "electron:package:linux": "yarn build && electron-builder -l -c.extraMetadata.main=build/electron.js"
   },
   "build": {
-    "appId": "hello.world.electron",
-    "productName": "Eletron with React Example",
+    "appId": "worklogs.jira.electron",
+    "productName": "Worklogs Jira",
     "files": [
       "build/**/*",
       "node_modules/**/*"

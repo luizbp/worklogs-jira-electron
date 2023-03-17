@@ -9,8 +9,9 @@ Worklogs Jira
 O projeto é um MVP, temos algumas melhorias sugeridas para serem implementadas e os problemas já mapeados:
 
 ### **Problemas**
- - Nenhuma mapeada por enquanto;
+- [x] Quando minimiza a janela o timer para de contar - Corrigido na `Versão 0.2.0`
 ### **Melhorias**
+- [x] Ao invés de deletar todas as tarefas e descrições salvas, deletar a que esta selecionada - Implementado na `Versão 0.2.0`
 - [ ] Integrar com API do Jira para o apontamento ser feito automaticamente
 - [ ] Colocar forma de exportar relatório para Excel
 - [ ] Melhorar a forma que é salvo os dados para uma melhor percistencia de dados
@@ -25,6 +26,7 @@ Antes de começar, verifique se você atendeu aos seguintes requisitos:
 
 Baixe a versão desejada do aplicativo:
 - [Worklogs Jira Setup 0.1.0](https://1drv.ms/u/s!Av3PhCVdQ30ghppp3PS7jStFZ5PXdQ?e=SbCxdT)
+- [Worklogs Jira Setup 0.2.0](https://1drv.ms/u/s!Av3PhCVdQ30ghppqP4-9JXqJpdoyig?e=LlEeXC)
 
 Depois basta descompatar o arquivo `.rar` e executar o arquivo `Worklogs Jira Setup x.x.x.exe`
 ## 📫 Contribuindo para Worklogs Jira

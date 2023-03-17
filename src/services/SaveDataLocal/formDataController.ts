@@ -1,12 +1,11 @@
-import { Option } from '../../types/Option'
-import { FormData } from '../../types/FormData'
+import { Option } from "../../types/Option";
+import { FormData } from "../../types/FormData";
 
 export const formDataController = (type: FormData) => {
-
   const get = () => {
     const data = localStorage.getItem(type);
 
-    return data ? JSON.parse(data) : []
+    return data ? JSON.parse(data) : [];
   };
 
   const save = (newItem: Option) => {
@@ -17,14 +16,27 @@ export const formDataController = (type: FormData) => {
     localStorage.setItem(type, JSON.stringify(options));
   };
 
+  const remove = (value: string | undefined) => {
+    if (!value) return;
+
+    const currentLogs = localStorage.getItem(type);
+    const data = currentLogs ? (JSON.parse(currentLogs) as []) : [];
+
+    const newLogs = data?.filter(
+      ({ value: currentValue }) => currentValue !== value
+    );
+
+    localStorage.setItem(type, JSON.stringify(newLogs));
+  };
+
   const clear = () => {
     localStorage.setItem(type, JSON.stringify([]));
   };
 
-
   return {
     get,
     save,
-    clear
-  }
-}
+    clear,
+    remove,
+  };
+};

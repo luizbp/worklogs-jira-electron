@@ -25,6 +25,8 @@ export const TaskInfoForm = ({
 }: TaskInfoFormParams) => {
   const [optionsTask, setOptionsTask] = useState([]);
   const [optionsDescription, setOptionsDescription] = useState([]);
+  const [currentTask, setCurrentTask] = useState<Option | null>();
+  const [currentDescription, setCurrentDescription] = useState<Option | null>();
 
   const getData = async () => {
     const defaultTasks = formDataController("task").get();
@@ -46,23 +48,27 @@ export const TaskInfoForm = ({
   const clearData = (type: FormData) => {
     Swal.fire({
       title: "Attention",
-      text: `Clear all saved ${type === "task" ? "tasks" : "descriptions"}`,
+      text: `Delete ${type} option?`,
       showCancelButton: true,
       confirmButtonColor: "#08979c",
       cancelButtonColor: "#ff4d4f",
-      confirmButtonText: "Clean",
+      confirmButtonText: "Delete",
     }).then((result) => {
       if (result.isConfirmed) {
-        formDataController(type).clear();
-        
-        if (type === "task") setTask(null);
-        else setDescription(null);
+        formDataController(type).remove(
+          type === "task" ? currentTask?.value : currentDescription?.value
+        );
+
+        if (type === "task") {
+          setTask(null)
+          setCurrentTask(null)
+        }
+        else {
+          setDescription(null)
+          setCurrentDescription(null)
+        };
 
         getData();
-
-        Swal.fire({
-          icon: "success",
-        });
       }
     });
   };
@@ -79,7 +85,10 @@ export const TaskInfoForm = ({
           <CreatableSelect
             isClearable
             id="select-task"
-            onChange={(task) => setTask(task)}
+            onChange={(task) => {
+              setTask(task);
+              setCurrentTask(task);
+            }}
             onCreateOption={(task) =>
               addData("task", {
                 value: task.toUpperCase(),
@@ -87,14 +96,18 @@ export const TaskInfoForm = ({
               })
             }
             options={optionsTask}
-            value={task ? {
-              value: task.value.toUpperCase(),
-              label: task.label.toUpperCase(),
-            } : null}
+            value={
+              task
+                ? {
+                    value: task.value.toUpperCase(),
+                    label: task.label.toUpperCase(),
+                  }
+                : null
+            }
           />
           <BsFillXCircleFill
             className="button--clear"
-            title="Clear saved tasks"
+            title="Delete task option"
             onClick={() => clearData("task")}
           />
         </div>
@@ -105,7 +118,10 @@ export const TaskInfoForm = ({
           <CreatableSelect
             isClearable
             id="select-description"
-            onChange={(description) => setDescription(description)}
+            onChange={(description) => {
+              setDescription(description);
+              setCurrentDescription(description);
+            }}
             onCreateOption={(description) =>
               addData("description", {
                 value: description,
@@ -117,7 +133,7 @@ export const TaskInfoForm = ({
           />
           <BsFillXCircleFill
             className="button--clear"
-            title="Clear saved descriptions"
+            title="Delete description option"
             onClick={() => clearData("description")}
           />
         </div>

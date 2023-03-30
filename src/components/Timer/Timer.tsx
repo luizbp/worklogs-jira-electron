@@ -19,6 +19,7 @@ import { WorkLog, WorkLogs } from "../../types/WorkLogs";
 import { ModalWorkLogs } from "../ModalWorkLogs/ModalWorkLogs";
 import { ModalManualLog } from "../ModalManualLog/ModalManualLog";
 import { workLogsController } from "../../services/SaveDataLocal/workLogsController";
+import { getFormattedDate } from "../../helpers/getFormattedDate";
 
 type TimerParams = {
   task: Option | null | undefined;
@@ -31,6 +32,7 @@ export const Timer = ({ description, task }: TimerParams) => {
   const [logs, setLogs] = useState<WorkLogs>([]);
   const [time, setTime] = useState(0);
   const [startDate, setStartDate] = useState("");
+  const [StartHour, setStartHour] = useState("");
 
   const [openModalLogs, setOpenModalLogs] = useState(false);
   const [openModalManualLogs, setOpenModalManualLogs] = useState(false);
@@ -129,7 +131,10 @@ export const Timer = ({ description, task }: TimerParams) => {
       setIsActive(true);
       setIsPaused(false);
 
-      setStartDate(new Date().toLocaleString());
+      const fullDate = getFormattedDate(new Date())
+
+      setStartDate(fullDate.date);
+      setStartHour(fullDate.hour);
 
       return;
     }
@@ -187,7 +192,7 @@ export const Timer = ({ description, task }: TimerParams) => {
       workLog.save({
         newItem: {
           id: Date.now().toString(),
-          startDate: startDate,
+          startDate: `${startDate} - ${StartHour}`,
           description: description?.value || "",
           task: task?.value || "",
           time: completTime,

@@ -15,7 +15,7 @@ import { HiDocumentMagnifyingGlass } from "react-icons/hi2";
 import { useEffect, useState } from "react";
 import type { Option } from "../../types/Option";
 import Swal from "sweetalert2";
-import { WorkLog, WorkLogs } from "../../types/WorkLogs";
+import { WorkLogs } from "../../types/WorkLogs";
 import { ModalWorkLogs } from "../ModalWorkLogs/ModalWorkLogs";
 import { ModalManualLog } from "../ModalManualLog/ModalManualLog";
 import { workLogsController } from "../../services/SaveDataLocal/workLogsController";
@@ -130,6 +130,7 @@ export const Timer = ({ description, task }: TimerParams) => {
     if (time === 0) {
       setIsActive(true);
       setIsPaused(false);
+      setTime(60000)
 
       const fullDate = getFormattedDate(new Date())
 
@@ -193,6 +194,7 @@ export const Timer = ({ description, task }: TimerParams) => {
         newItem: {
           id: Date.now().toString(),
           startDate: `${startDate} - ${StartHour}`,
+          startDateFormatted: StartHour,
           description: description?.value || "",
           task: task?.value || "",
           time: completTime,

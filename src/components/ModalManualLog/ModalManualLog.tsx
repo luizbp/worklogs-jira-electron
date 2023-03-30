@@ -77,9 +77,10 @@ export const ModalManualLog = ({
           newItem: {
             id: Date.now().toString(),
             startDate: dateFormated,
+            startDateFormatted: fullDate.hour,
             description,
             task,
-            time,
+            time
           }
         });
 

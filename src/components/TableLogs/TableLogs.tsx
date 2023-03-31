@@ -1,3 +1,5 @@
+import "./index.css";
+
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -13,7 +15,7 @@ type TableLogsParams = {
   deleteWorkLog: any;
 };
 
-export const TableLogs = ({ logs, deleteWorkLog}: TableLogsParams) => {
+export const TableLogs = ({ logs, deleteWorkLog }: TableLogsParams) => {
   return (
     <TableContainer sx={{ maxHeight: "350px" }} component={Paper}>
       <Table aria-label="simple table">
@@ -33,11 +35,49 @@ export const TableLogs = ({ logs, deleteWorkLog}: TableLogsParams) => {
               sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
             >
               <TableCell component="th" scope="row">
-                {row.startDate}
+                <p
+                  className="action-click-clipboard"
+                  title="Copy hour to jira"
+                  onClick={() => {
+                    navigator.clipboard.writeText(row.startDateFormatted);
+                  }}
+                >
+                  {row.startDate}
+                </p>
               </TableCell>
-              <TableCell>{row.task}</TableCell>
-              <TableCell>{row.description}</TableCell>
-              <TableCell>{row.time}</TableCell>
+              <TableCell>
+              <p
+                  className="action-click-clipboard"
+                  title="Copy to jira"
+                  onClick={() => {
+                    navigator.clipboard.writeText(row.task);
+                  }}
+                >
+                  {row.task}
+                </p>
+              </TableCell>
+              <TableCell>
+                <p
+                  className="action-click-clipboard"
+                  title="Copy to jira"
+                  onClick={() => {
+                    navigator.clipboard.writeText(row.description);
+                  }}
+                >
+                  {row.description}
+                </p>
+              </TableCell>
+              <TableCell>
+              <p
+                  className="action-click-clipboard"
+                  title="Copy to jira"
+                  onClick={() => {
+                    navigator.clipboard.writeText(row.time);
+                  }}
+                >
+                  {row.time}
+                </p>
+              </TableCell>
               <TableCell>
                 <BsFillTrashFill
                   className="button--clear"

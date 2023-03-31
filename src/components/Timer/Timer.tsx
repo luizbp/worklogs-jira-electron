@@ -15,10 +15,11 @@ import { HiDocumentMagnifyingGlass } from "react-icons/hi2";
 import { useEffect, useState } from "react";
 import type { Option } from "../../types/Option";
 import Swal from "sweetalert2";
-import { WorkLog, WorkLogs } from "../../types/WorkLogs";
+import { WorkLogs } from "../../types/WorkLogs";
 import { ModalWorkLogs } from "../ModalWorkLogs/ModalWorkLogs";
 import { ModalManualLog } from "../ModalManualLog/ModalManualLog";
 import { workLogsController } from "../../services/SaveDataLocal/workLogsController";
+import { getFormattedDate } from "../../helpers/getFormattedDate";
 
 type TimerParams = {
   task: Option | null | undefined;
@@ -31,6 +32,7 @@ export const Timer = ({ description, task }: TimerParams) => {
   const [logs, setLogs] = useState<WorkLogs>([]);
   const [time, setTime] = useState(0);
   const [startDate, setStartDate] = useState("");
+  const [StartHour, setStartHour] = useState("");
 
   const [openModalLogs, setOpenModalLogs] = useState(false);
   const [openModalManualLogs, setOpenModalManualLogs] = useState(false);
@@ -128,8 +130,12 @@ export const Timer = ({ description, task }: TimerParams) => {
     if (time === 0) {
       setIsActive(true);
       setIsPaused(false);
+      setTime(60000)
 
-      setStartDate(new Date().toLocaleString());
+      const fullDate = getFormattedDate(new Date())
+
+      setStartDate(fullDate.date);
+      setStartHour(fullDate.hour);
 
       return;
     }
@@ -187,7 +193,8 @@ export const Timer = ({ description, task }: TimerParams) => {
       workLog.save({
         newItem: {
           id: Date.now().toString(),
-          startDate: startDate,
+          startDate: `${startDate} - ${StartHour}`,
+          startDateFormatted: StartHour,
           description: description?.value || "",
           task: task?.value || "",
           time: completTime,

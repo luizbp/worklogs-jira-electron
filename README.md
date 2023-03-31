@@ -4,18 +4,6 @@ Worklogs Jira
 
 <p align="center">Aplicação desenvolvida para auxiliar no crontrole de tempo gasto em cada tarefa do Jira, tendo uma agilidade maior para trabalhar durante o dia para fazer os lançamento apenas no final do dia.</p>
 
-## 🧰 Ajustes e melhorias
-
-O projeto é um MVP, temos algumas melhorias sugeridas para serem implementadas e os problemas já mapeados:
-
-### **Problemas**
-- [x] Quando minimiza a janela o timer para de contar - Corrigido na `Versão 0.2.0`
-### **Melhorias**
-- [x] Ao invés de deletar todas as tarefas e descrições salvas, deletar a que esta selecionada - Implementado na `Versão 0.2.0`
-- [ ] Integrar com API do Jira para o apontamento ser feito automaticamente
-- [ ] Colocar forma de exportar relatório para Excel
-- [ ] Melhorar a forma que é salvo os dados para uma melhor percistencia de dados
-
 ## 📋 Pré-requisitos
 
 Antes de começar, verifique se você atendeu aos seguintes requisitos:
@@ -28,6 +16,7 @@ Baixe a versão desejada do aplicativo:
 ### Windows
 - [Worklogs Jira Setup 0.1.0](https://github.com/luizbp/clockwork-jira-electron/releases/download/0.1.0/Worklogs.Jira.Setup.0.1.0.rar)
 - [Worklogs Jira Setup 0.2.0](https://github.com/luizbp/clockwork-jira-electron/releases/download/0.2.0/Worklogs.Jira.Setup.0.2.0.rar)
+- [Worklogs Jira Setup 0.3.0](https://github.com/luizbp/clockwork-jira-electron/releases/download/v0.3.0/Worklogs.Jira.Setup.0.3.0.rar)
 
 ### Mac
 ### Linux

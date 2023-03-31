@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+
+## [0.3.0] - 2023-03-31
+
 ### Changed
 
  - [Issue #6](https://github.com/luizbp/clockwork-jira-electron/issues/6) - Separate installation version by operating system in the readme

@@ -7,11 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [0.1.0] - 2023-03-17
 
-### Added
+## [0.3.0] - 2023-03-31
 
-- Version initial
+### Changed
+
+ - [Issue #6](https://github.com/luizbp/clockwork-jira-electron/issues/6) - Separate installation version by operating system in the readme
+ - [Issue #9](https://github.com/luizbp/clockwork-jira-electron/issues/9) - Remove seconds from the "Start Date" of the report
+ - [Issue #10](https://github.com/luizbp/clockwork-jira-electron/issues/10) - Put for when clicking on the information to copy as jira requests
 
 ## [0.2.0] - 2023-03-17
 
@@ -22,3 +25,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Instead of deleting all saved tasks and descriptions, delete the selected one
+
+## [0.1.0] - 2023-03-17
+
+### Added
+
+- Version initial

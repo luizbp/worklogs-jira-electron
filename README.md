@@ -25,8 +25,13 @@ Antes de começar, verifique se você atendeu aos seguintes requisitos:
 ## 💻 Baixando e instalando Worklogs Jira
 
 Baixe a versão desejada do aplicativo:
-- [Worklogs Jira Setup 0.1.0](https://1drv.ms/u/s!Av3PhCVdQ30ghppp3PS7jStFZ5PXdQ?e=SbCxdT)
-- [Worklogs Jira Setup 0.2.0](https://1drv.ms/u/s!Av3PhCVdQ30ghppqP4-9JXqJpdoyig?e=LlEeXC)
+### Windows
+- [Worklogs Jira Setup 0.1.0](https://github.com/luizbp/clockwork-jira-electron/releases/download/0.1.0/Worklogs.Jira.Setup.0.1.0.rar)
+- [Worklogs Jira Setup 0.2.0](https://github.com/luizbp/clockwork-jira-electron/releases/download/0.2.0/Worklogs.Jira.Setup.0.2.0.rar)
+
+### Mac
+### Linux
+
 
 Depois basta descompatar o arquivo `.rar` e executar o arquivo `Worklogs Jira Setup x.x.x.exe`
 ## 📫 Contribuindo para Worklogs Jira

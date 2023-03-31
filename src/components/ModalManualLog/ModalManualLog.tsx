@@ -8,6 +8,7 @@ import TextField from "@mui/material/TextField";
 import { useState } from "react";
 import Swal from "sweetalert2";
 import { workLogsController } from "../../services/SaveDataLocal/workLogsController";
+import { getFormattedDate } from "../../helpers/getFormattedDate";
 
 const styleBoxModal = {
   position: "absolute" as "absolute",
@@ -53,7 +54,8 @@ export const ModalManualLog = ({
   };
 
   const save = () => {
-    const dateFormated = new Date(startDate).toLocaleString()
+    const fullDate = getFormattedDate(new Date(startDate))
+    const dateFormated = `${fullDate.date} - ${fullDate.hour}`
 
     Swal.fire({
       title: "Save Worklog",
@@ -75,9 +77,10 @@ export const ModalManualLog = ({
           newItem: {
             id: Date.now().toString(),
             startDate: dateFormated,
+            startDateFormatted: fullDate.hour,
             description,
             task,
-            time,
+            time
           }
         });
 

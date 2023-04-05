@@ -24,9 +24,10 @@ import { getFormattedDate } from "../../helpers/getFormattedDate";
 type TimerParams = {
   task: Option | null | undefined;
   description: Option | null | undefined;
+  showButtonViewWorkLogs: boolean;
 };
 
-export const Timer = ({ description, task }: TimerParams) => {
+export const Timer = ({ description, task, showButtonViewWorkLogs }: TimerParams) => {
   const [isActive, setIsActive] = useState(false);
   const [isPaused, setIsPaused] = useState(true);
   const [logs, setLogs] = useState<WorkLogs>([]);
@@ -124,14 +125,14 @@ export const Timer = ({ description, task }: TimerParams) => {
     return true;
   };
 
-  const handleStarPauseResume = (pIsPaused?:boolean) => {
+  const handleStarPauseResume = (pIsPaused?: boolean) => {
     if (!validateFields()) return;
 
     if (time === 0) {
       setIsActive(true);
       setIsPaused(false);
 
-      const fullDate = getFormattedDate(new Date())
+      const fullDate = getFormattedDate(new Date());
 
       setStartDate(fullDate.date);
       setStartHour(fullDate.hour);
@@ -156,7 +157,7 @@ export const Timer = ({ description, task }: TimerParams) => {
 
     handleStarPauseResume(true);
 
-    if(!hour && !min) {
+    if (!hour && !min) {
       const result = await Swal.fire({
         title: "Attention",
         text: `Insufficient amount of time Want to reset the timer?`,
@@ -164,13 +165,13 @@ export const Timer = ({ description, task }: TimerParams) => {
         confirmButtonColor: "#08979c",
         cancelButtonColor: "#ff4d4f",
         confirmButtonText: "Reset",
-      })
+      });
 
       if (result.isConfirmed) {
         handleReset();
       }
 
-      return
+      return;
     }
 
     const completTime = `${hour}h ${min}m`;
@@ -184,7 +185,7 @@ export const Timer = ({ description, task }: TimerParams) => {
       confirmButtonColor: "#08979c",
       cancelButtonColor: "#ff4d4f",
       confirmButtonText: "Save",
-    })
+    });
 
     if (result.isConfirmed) {
       const workLog = workLogsController();
@@ -283,16 +284,19 @@ export const Timer = ({ description, task }: TimerParams) => {
         </a>
       </div>
       <div className="box--buttons">
-        <a
-          className="button--primary"
-          id="button-stop"
-          href="#"
-          onClick={() => {
-            setOpenModalLogs(true);
-          }}
-        >
-          View WorkLogs <HiDocumentMagnifyingGlass className="color-primary" />
-        </a>
+        {showButtonViewWorkLogs && (
+          <a
+            className="button--primary"
+            id="button-stop"
+            href="#"
+            onClick={() => {
+              setOpenModalLogs(true);
+            }}
+          >
+            View WorkLogs{" "}
+            <HiDocumentMagnifyingGlass className="color-primary" />
+          </a>
+        )}
       </div>
       <ModalWorkLogs
         handleClose={() => setOpenModalLogs(false)}

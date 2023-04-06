@@ -9,6 +9,7 @@ import type { Option } from "../../types/Option";
 import { BsFillXCircleFill } from "react-icons/bs";
 import { formDataController } from "../../services/SaveDataLocal/formDataController";
 import type { FormData } from "../../types/FormData";
+import { useConfig } from "../../contexts/ConfigContext";
 
 type TaskInfoFormParams = {
   task: Option | null | undefined;
@@ -23,6 +24,8 @@ export const TaskInfoForm = ({
   setDescription,
   setTask,
 }: TaskInfoFormParams) => {
+
+
   const [optionsTask, setOptionsTask] = useState([]);
   const [optionsDescription, setOptionsDescription] = useState([]);
   const [currentTask, setCurrentTask] = useState<Option | null>();
@@ -60,13 +63,12 @@ export const TaskInfoForm = ({
         );
 
         if (type === "task") {
-          setTask(null)
-          setCurrentTask(null)
+          setTask(null);
+          setCurrentTask(null);
+        } else {
+          setDescription(null);
+          setCurrentDescription(null);
         }
-        else {
-          setDescription(null)
-          setCurrentDescription(null)
-        };
 
         getData();
       }
@@ -76,6 +78,10 @@ export const TaskInfoForm = ({
   useEffect(() => {
     getData();
   }, []);
+
+  const { timerMode } = useConfig();
+
+  if(timerMode === 'minimalist') return null
 
   return (
     <div className="task-info-form">

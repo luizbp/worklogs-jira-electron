@@ -20,14 +20,14 @@ import { ModalWorkLogs } from "../ModalWorkLogs/ModalWorkLogs";
 import { ModalManualLog } from "../ModalManualLog/ModalManualLog";
 import { workLogsController } from "../../services/SaveDataLocal/workLogsController";
 import { getFormattedDate } from "../../helpers/getFormattedDate";
+import { useConfig } from "../../contexts/ConfigContext";
 
 type TimerParams = {
   task: Option | null | undefined;
   description: Option | null | undefined;
-  showButtonViewWorkLogs: boolean;
 };
 
-export const Timer = ({ description, task, showButtonViewWorkLogs }: TimerParams) => {
+export const Timer = ({ description, task }: TimerParams) => {
   const [isActive, setIsActive] = useState(false);
   const [isPaused, setIsPaused] = useState(true);
   const [logs, setLogs] = useState<WorkLogs>([]);
@@ -37,6 +37,7 @@ export const Timer = ({ description, task, showButtonViewWorkLogs }: TimerParams
 
   const [openModalLogs, setOpenModalLogs] = useState(false);
   const [openModalManualLogs, setOpenModalManualLogs] = useState(false);
+  const { timerMode, setTimerMode } = useConfig();
 
   useEffect(() => {
     let interval: any = null;
@@ -105,6 +106,8 @@ export const Timer = ({ description, task, showButtonViewWorkLogs }: TimerParams
 
   const validateFields = (): boolean => {
     if (!task) {
+      setTimerMode('window')
+      
       Swal.fire({
         title: "Ops...",
         text: "Task not informed",
@@ -114,6 +117,8 @@ export const Timer = ({ description, task, showButtonViewWorkLogs }: TimerParams
     }
 
     if (!description) {
+      setTimerMode('window')
+
       Swal.fire({
         title: "Ops...",
         text: "Description not informed",
@@ -156,6 +161,8 @@ export const Timer = ({ description, task, showButtonViewWorkLogs }: TimerParams
     const min = Math.floor((time / 60000) % 60);
 
     handleStarPauseResume(true);
+
+    setTimerMode('window')
 
     if (!hour && !min) {
       const result = await Swal.fire({
@@ -277,27 +284,30 @@ export const Timer = ({ description, task, showButtonViewWorkLogs }: TimerParams
           href="#"
           title={"Finalizar"}
           onClick={() => {
+            setTimerMode('window')
             setOpenModalManualLogs(true);
           }}
         >
           <BsFillPlusCircleFill />
         </a>
       </div>
-      <div className="box--buttons">
-        {showButtonViewWorkLogs && (
-          <a
-            className="button--primary"
-            id="button-stop"
-            href="#"
-            onClick={() => {
-              setOpenModalLogs(true);
-            }}
-          >
-            View WorkLogs{" "}
-            <HiDocumentMagnifyingGlass className="color-primary" />
-          </a>
-        )}
-      </div>
+      {timerMode === "window" && (
+        <div className="box--buttons">
+          {
+            <a
+              className="button--primary"
+              id="button-stop"
+              href="#"
+              onClick={() => {
+                setOpenModalLogs(true);
+              }}
+            >
+              View WorkLogs{" "}
+              <HiDocumentMagnifyingGlass className="color-primary" />
+            </a>
+          }
+        </div>
+      )}
       <ModalWorkLogs
         handleClose={() => setOpenModalLogs(false)}
         open={openModalLogs}

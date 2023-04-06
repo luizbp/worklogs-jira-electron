@@ -1,1 +1,1 @@
-export type TimerMode = 'minimalist' | 'initial'
+export type TimerMode = 'minimalist' | 'window'

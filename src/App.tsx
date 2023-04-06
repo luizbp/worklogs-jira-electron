@@ -4,46 +4,32 @@ import "./App.css";
 import { TaskInfoForm } from "./components/TaskInfoForm/TaskInfoForm";
 import { Timer } from "./components/Timer/Timer";
 import type { Option } from "./types/Option";
-import { setMinimalistTimerMode, setInitialTimerMode } from "./services/integrationIpcRender";
+import ConfigProvider from "./contexts/ConfigContext";
+import { ResolutionButton } from "./components/ResolutionButton/ResolutionButton";
 
 function App() {
   const [task, setTask] = useState<Option | null>();
-  const [showTaskInfoForm, setShowTaskInfoForm] = useState<boolean>(true);
   const [description, setDescription] = useState<Option | null>();
 
   return (
     <div className="App">
-      <header className="App-header">
-        <div>
-          <button
-            onClick={() => {
-              if (showTaskInfoForm)
-                setMinimalistTimerMode({
-                  callBack: () => {
-                    setShowTaskInfoForm(false);
-                  },
-                });
-              else
-                setInitialTimerMode({
-                  callBack: () => {
-                    setShowTaskInfoForm(true);
-                  },
-                });
-            }}
-          >
-            hide
-          </button>
-        </div>
-        {showTaskInfoForm && (
-          <TaskInfoForm
+      <ConfigProvider>
+        <header className="App-header">
+          <div className="box-config-buttons">
+            <ResolutionButton/>
+          </div>
+            <TaskInfoForm
+              description={description}
+              task={task}
+              setTask={setTask}
+              setDescription={setDescription}
+            />
+          <Timer
             description={description}
             task={task}
-            setTask={setTask}
-            setDescription={setDescription}
           />
-        )}
-        <Timer description={description} task={task} showButtonViewWorkLogs={showTaskInfoForm} />
-      </header>
+        </header>
+      </ConfigProvider>
     </div>
   );
 }

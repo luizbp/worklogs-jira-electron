@@ -3,12 +3,20 @@ const path = require("path");
 
 const isDev = require("electron-is-dev");
 
+const widthWindowMode = 820
+const heigthWindowMode = 550
+
+const widthMinimalistMode = 195
+const heigthMinimalistMode = 205
+const maxWidthMinimalistMode = 250
+const maxHeigthMinimalistMode = 250
+
 const createWindow = () => {
   const win = new BrowserWindow({
-    width: 550,
-    height: 550,
-    minWidth: 550,
-    minHeight: 550,
+    width: widthWindowMode,
+    height: heigthWindowMode,
+    minWidth: widthWindowMode,
+    minHeight: heigthWindowMode,
     alwaysOnTop: false,
     minimizable: true,
     maximizable: true,
@@ -20,7 +28,7 @@ const createWindow = () => {
     icon: `${__dirname}/logo192.png`,
   });
 
-  win.setMenuBarVisibility(false);
+  win.setMenuBarVisibility(isDev);
 
   win.loadURL(
     isDev
@@ -29,9 +37,9 @@ const createWindow = () => {
   );
 
   ipcMain.handle("set-minimalist-timer-mode", async (event, ...args) => {
-    win.setMaximumSize(250, 250)
-    win.setMinimumSize(195, 205)
-    win.setSize(195, 205)
+    win.setMaximumSize(maxWidthMinimalistMode, maxHeigthMinimalistMode)
+    win.setMinimumSize(widthMinimalistMode, heigthMinimalistMode)
+    win.setSize(widthMinimalistMode, heigthMinimalistMode)
     win.setMinimizable(false)
     win.setMaximizable(false)
     win.setPosition(50, 50, true)
@@ -39,9 +47,9 @@ const createWindow = () => {
   });
 
   ipcMain.handle("set-initial-timer-mode", async (event, ...args) => {
-    win.setMinimumSize(550, 550)
+    win.setMinimumSize(widthWindowMode, heigthWindowMode)
     win.setMaximumSize(4000, 4000)
-    win.setSize(550, 550)
+    win.setSize(widthWindowMode, heigthWindowMode)
     win.setMinimizable(true)
     win.setMaximizable(true)
     win.center();

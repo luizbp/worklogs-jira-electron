@@ -2,10 +2,10 @@ import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import { TableLogs } from "../TableLogs/TableLogs";
-import { WorkLogs } from "../../types/WorkLogs";
 import Button from "@mui/material/Button";
 
 import "./index.css";
+import { useConfig } from "../../contexts/ConfigContext";
 
 const styleBoxModal = {
   position: "absolute" as "absolute",
@@ -33,16 +33,17 @@ type ModalWorkLogsParams = {
   handleClose: any;
   clearLogs: any;
   deleteWorkLog: (id: string) => void;
-  logs: WorkLogs;
 };
 
 export const ModalWorkLogs = ({
   handleClose,
   open,
-  logs,
   clearLogs,
   deleteWorkLog
 }: ModalWorkLogsParams) => {
+
+  const { logs } = useConfig();
+
   return (
     <Modal
       sx={styleModal}

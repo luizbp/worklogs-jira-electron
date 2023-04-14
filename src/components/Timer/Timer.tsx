@@ -13,29 +13,25 @@ import {
 import { HiDocumentMagnifyingGlass } from "react-icons/hi2";
 
 import { useEffect, useState } from "react";
-import type { Option } from "../../types/Option";
 import Swal from "sweetalert2";
-import { WorkLogs } from "../../types/WorkLogs";
 import { ModalWorkLogs } from "../ModalWorkLogs/ModalWorkLogs";
 import { ModalManualLog } from "../ModalManualLog/ModalManualLog";
 import { workLogsController } from "../../services/SaveDataLocal/workLogsController";
 import { getFormattedDate } from "../../helpers/getFormattedDate";
+import { useConfig } from "../../contexts/ConfigContext";
 
-type TimerParams = {
-  task: Option | null | undefined;
-  description: Option | null | undefined;
-};
 
-export const Timer = ({ description, task }: TimerParams) => {
+
+export const Timer = () => {
   const [isActive, setIsActive] = useState(false);
   const [isPaused, setIsPaused] = useState(true);
-  const [logs, setLogs] = useState<WorkLogs>([]);
   const [time, setTime] = useState(0);
   const [startDate, setStartDate] = useState("");
   const [StartHour, setStartHour] = useState("");
 
   const [openModalLogs, setOpenModalLogs] = useState(false);
   const [openModalManualLogs, setOpenModalManualLogs] = useState(false);
+  const { timerMode, setTimerMode, task, description, getWorkLog } = useConfig();
 
   useEffect(() => {
     let interval: any = null;
@@ -52,18 +48,6 @@ export const Timer = ({ description, task }: TimerParams) => {
     };
   }, [isActive, isPaused]);
 
-  useEffect(() => {
-    getWorkLog();
-  }, []);
-
-  const getWorkLog = async () => {
-    const workLog = workLogsController();
-
-    const { logs: defaultLogs } = workLog.get();
-
-    setLogs(defaultLogs);
-  };
-
   const clearWorkLog = () => {
     Swal.fire({
       title: "Attention",
@@ -74,10 +58,7 @@ export const Timer = ({ description, task }: TimerParams) => {
       confirmButtonText: "Clean",
     }).then((result) => {
       if (result.isConfirmed) {
-        const type = "logs";
-        localStorage.setItem(type, JSON.stringify([]));
-        setLogs([]);
-
+        workLogsController().clearAll();
         getWorkLog();
 
         Swal.fire({
@@ -104,6 +85,8 @@ export const Timer = ({ description, task }: TimerParams) => {
 
   const validateFields = (): boolean => {
     if (!task) {
+      setTimerMode('window')
+      
       Swal.fire({
         title: "Ops...",
         text: "Task not informed",
@@ -113,6 +96,8 @@ export const Timer = ({ description, task }: TimerParams) => {
     }
 
     if (!description) {
+      setTimerMode('window')
+
       Swal.fire({
         title: "Ops...",
         text: "Description not informed",
@@ -124,14 +109,14 @@ export const Timer = ({ description, task }: TimerParams) => {
     return true;
   };
 
-  const handleStarPauseResume = (pIsPaused?:boolean) => {
+  const handleStarPauseResume = (pIsPaused?: boolean) => {
     if (!validateFields()) return;
 
     if (time === 0) {
       setIsActive(true);
       setIsPaused(false);
 
-      const fullDate = getFormattedDate(new Date())
+      const fullDate = getFormattedDate(new Date());
 
       setStartDate(fullDate.date);
       setStartHour(fullDate.hour);
@@ -156,7 +141,9 @@ export const Timer = ({ description, task }: TimerParams) => {
 
     handleStarPauseResume(true);
 
-    if(!hour && !min) {
+    setTimerMode('window')
+
+    if (!hour && !min) {
       const result = await Swal.fire({
         title: "Attention",
         text: `Insufficient amount of time Want to reset the timer?`,
@@ -164,13 +151,13 @@ export const Timer = ({ description, task }: TimerParams) => {
         confirmButtonColor: "#08979c",
         cancelButtonColor: "#ff4d4f",
         confirmButtonText: "Reset",
-      })
+      });
 
       if (result.isConfirmed) {
         handleReset();
       }
 
-      return
+      return;
     }
 
     const completTime = `${hour}h ${min}m`;
@@ -184,7 +171,7 @@ export const Timer = ({ description, task }: TimerParams) => {
       confirmButtonColor: "#08979c",
       cancelButtonColor: "#ff4d4f",
       confirmButtonText: "Save",
-    })
+    });
 
     if (result.isConfirmed) {
       const workLog = workLogsController();
@@ -235,7 +222,7 @@ export const Timer = ({ description, task }: TimerParams) => {
           className="button--circle-primary"
           id="button-stop"
           href="#"
-          title={isActive && !isPaused ? "Pausar" : "Iniciar"}
+          title={isActive && !isPaused ? "Stop" : "Start"}
           onClick={() => {
             handleStarPauseResume();
           }}
@@ -250,7 +237,7 @@ export const Timer = ({ description, task }: TimerParams) => {
           className="button--circle-secundary"
           id="button-reset"
           href="#"
-          title="Resetar"
+          title="Reset"
           onClick={() => {
             handleReset();
           }}
@@ -263,7 +250,7 @@ export const Timer = ({ description, task }: TimerParams) => {
           }`}
           id="button-pause"
           href="#"
-          title={"Finalizar"}
+          title={"Finish"}
           onClick={async () => {
             await handleStop();
           }}
@@ -272,39 +259,43 @@ export const Timer = ({ description, task }: TimerParams) => {
         </a>
         <a
           className={`button--circle-secundary ${time ? "color-disabled" : ""}`}
-          id="button-pause"
+          id="button-add-manual"
           href="#"
-          title={"Finalizar"}
+          title={"Add Manual"}
           onClick={() => {
+            setTimerMode('window')
             setOpenModalManualLogs(true);
           }}
         >
           <BsFillPlusCircleFill />
         </a>
       </div>
-      <div className="box--buttons">
-        <a
-          className="button--primary"
-          id="button-stop"
-          href="#"
-          onClick={() => {
-            setOpenModalLogs(true);
-          }}
-        >
-          View WorkLogs <HiDocumentMagnifyingGlass className="color-primary" />
-        </a>
-      </div>
+      {timerMode === "window" && (
+        <div className="box--buttons">
+          {
+            <a
+              className="button--primary"
+              id="button-stop"
+              href="#"
+              onClick={() => {
+                setOpenModalLogs(true);
+              }}
+            >
+              View WorkLogs{" "}
+              <HiDocumentMagnifyingGlass className="color-primary" />
+            </a>
+          }
+        </div>
+      )}
       <ModalWorkLogs
         handleClose={() => setOpenModalLogs(false)}
         open={openModalLogs}
-        logs={logs}
         clearLogs={clearWorkLog}
         deleteWorkLog={deleteWorkLog}
       />
       <ModalManualLog
         handleClose={() => setOpenModalManualLogs(false)}
         open={openModalManualLogs}
-        getData={getWorkLog}
       />
     </div>
   );

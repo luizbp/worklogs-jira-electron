@@ -33,10 +33,15 @@ export const workLogsController = () => {
     }
   };
 
+  const clearAll = () => {
+    localStorage.setItem(type, JSON.stringify([]));
+  }
+
 
   return {
     save,
     remove,
-    get
+    get,
+    clearAll
   }
 }

@@ -7,9 +7,10 @@ export const getFormattedDate = (date: Date) => {
 
   const dayFormatted = day.toString().length === 1 ? `0${day}` : day
   const monthFormatted = month.toString().length === 1 ? `0${month}` : month
+  const minuteFormatted = minute.toString().length === 1 ? `0${minute}` : minute
 
   return {
-    hour: `${hour}:${minute}`,
+    hour: `${hour}:${minuteFormatted}`,
     date: `${dayFormatted}/${monthFormatted}/${fullYear}`
   }
 }

@@ -7,8 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
 - [Issue #12](https://github.com/luizbp/clockwork-jira-electron/issues/12) - Adding minimization and maximization functionality 
 - [Issue #13](https://github.com/luizbp/clockwork-jira-electron/issues/13) - Adding for Selecting and creating tasks and descriptions saved in manual log modal
+
+### Fixed
+
+- [Issue #17](https://github.com/luizbp/clockwork-jira-electron/issues/17) - Correcting minute formatting in work logs modal
 
 ## [0.3.0] - 2023-03-31
 

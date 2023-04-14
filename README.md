@@ -17,6 +17,7 @@ Baixe a versão desejada do aplicativo:
 - [Worklogs Jira Setup 0.1.0](https://github.com/luizbp/clockwork-jira-electron/releases/download/0.1.0/Worklogs.Jira.Setup.0.1.0.rar)
 - [Worklogs Jira Setup 0.2.0](https://github.com/luizbp/clockwork-jira-electron/releases/download/0.2.0/Worklogs.Jira.Setup.0.2.0.rar)
 - [Worklogs Jira Setup 0.3.0](https://github.com/luizbp/clockwork-jira-electron/releases/download/v0.3.0/Worklogs.Jira.Setup.0.3.0.rar)
+- [Worklogs Jira Setup 0.4.0](https://github.com/luizbp/clockwork-jira-electron/releases/download/v0.4.0/Worklogs.Jira.Setup.0.4.0.rar) `Latest`
 
 ### Mac
 ### Linux

@@ -2,6 +2,7 @@ import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
+import CreatableSelect from "react-select/creatable";
 
 import "./index.css";
 import TextField from "@mui/material/TextField";
@@ -9,6 +10,7 @@ import { useState } from "react";
 import Swal from "sweetalert2";
 import { workLogsController } from "../../services/SaveDataLocal/workLogsController";
 import { getFormattedDate } from "../../helpers/getFormattedDate";
+import { useConfig } from "../../contexts/ConfigContext";
 
 const styleBoxModal = {
   position: "absolute" as "absolute",
@@ -32,36 +34,33 @@ const styleModal = {
 
 type ModalWorkLogsParams = {
   open: boolean;
-  handleClose: any
-  getData: () => any
+  handleClose: any;
 };
 
 export const ModalManualLog = ({
   handleClose,
   open,
-  getData
 }: ModalWorkLogsParams) => {
   const [startDate, setStartDate] = useState("");
-  const [task, setTask] = useState("");
-  const [description, setDescription] = useState("");
   const [time, setTime] = useState("");
+  const { task, setTask, description, setDescription, optionsTask, optionsDescription, addData, getWorkLog } = useConfig();
 
   const clearFields = () => {
     setStartDate("");
-    setTask("");
-    setDescription("");
     setTime("");
   };
 
   const save = () => {
-    const fullDate = getFormattedDate(new Date(startDate))
-    const dateFormated = `${fullDate.date} - ${fullDate.hour}`
+    const fullDate = getFormattedDate(new Date(startDate));
+    const dateFormated = `${fullDate.date} - ${fullDate.hour}`;
+
+    if (!description || !task) return;
 
     Swal.fire({
       title: "Save Worklog",
       html: `Time: <b>"${time}"</b><br> 
-             Task: <b>"${task}"</b><br> 
-             Description: <b>"${description}"</b>
+             Task: <b>"${task.value}"</b><br> 
+             Description: <b>"${description.value}"</b><br>
              Start Date: <b>"${dateFormated}"</b><br> 
              `,
       showCancelButton: true,
@@ -70,7 +69,6 @@ export const ModalManualLog = ({
       confirmButtonText: "Save",
     }).then((result) => {
       if (result.isConfirmed) {
-
         const workLog = workLogsController();
 
         workLog.save({
@@ -78,13 +76,13 @@ export const ModalManualLog = ({
             id: Date.now().toString(),
             startDate: dateFormated,
             startDateFormatted: fullDate.hour,
-            description,
-            task,
-            time
-          }
+            description: description.value,
+            task: task.value,
+            time,
+          },
         });
 
-        getData()
+        getWorkLog();
 
         Swal.fire({
           title: "Saved successfully!",
@@ -103,6 +101,7 @@ export const ModalManualLog = ({
       onClose={handleClose}
       aria-labelledby="modal-modal-title"
       aria-describedby="modal-modal-description"
+      className="modal-manual-log"
     >
       <Box sx={styleBoxModal}>
         <Typography
@@ -126,21 +125,45 @@ export const ModalManualLog = ({
           </div>
           <div>
             <label htmlFor="task">Task</label>
-            <TextField
-              value={task}
-              onChange={({ target: { value } }) => setTask(value)}
-              fullWidth
-              id="task"
-              placeholder="Ex: ABCD-1234"
+            <CreatableSelect
+              isClearable
+              id="select-task"
+              onChange={(task) => {
+                setTask(task);
+              }}
+              onCreateOption={(task) =>
+                addData("task", {
+                  value: task.toUpperCase(),
+                  label: task.toUpperCase(),
+                })
+              }
+              options={optionsTask}
+              value={
+                task
+                  ? {
+                      value: task.value.toUpperCase(),
+                      label: task.label.toUpperCase(),
+                    }
+                  : null
+              }
             />
           </div>
           <div>
             <label htmlFor="description">Description</label>
-            <TextField
+            <CreatableSelect
+              isClearable
+              id="select-description"
+              onChange={(description) => {
+                setDescription(description);
+              }}
+              onCreateOption={(description) =>
+                addData("description", {
+                  value: description,
+                  label: description,
+                })
+              }
+              options={optionsDescription}
               value={description}
-              onChange={({ target: { value } }) => setDescription(value)}
-              fullWidth
-              id="description"
             />
           </div>
           <div>

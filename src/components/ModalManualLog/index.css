@@ -34,3 +34,11 @@
   flex-direction: column;
   gap: 5px;
 }
+
+.modal-manual-log .css-1fdsijx-ValueContainer {
+  padding: 10.5px 12px!important;
+}
+
+.MuiInputBase-input {
+  padding: 14.5px 14px !important;
+}

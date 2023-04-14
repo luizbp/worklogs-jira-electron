@@ -1,49 +1,28 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import Swal from "sweetalert2";
 
 import "./index.css";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import CreatableSelect from "react-select/creatable";
-import type { Option } from "../../types/Option";
 import { BsFillXCircleFill } from "react-icons/bs";
 import { formDataController } from "../../services/SaveDataLocal/formDataController";
 import type { FormData } from "../../types/FormData";
+import { useConfig } from "../../contexts/ConfigContext";
 
-type TaskInfoFormParams = {
-  task: Option | null | undefined;
-  description: Option | null | undefined;
-  setTask: (task: Option | null) => any;
-  setDescription: (description: Option | null) => any;
-};
-
-export const TaskInfoForm = ({
-  task,
-  description,
-  setDescription,
-  setTask,
-}: TaskInfoFormParams) => {
-  const [optionsTask, setOptionsTask] = useState([]);
-  const [optionsDescription, setOptionsDescription] = useState([]);
-  const [currentTask, setCurrentTask] = useState<Option | null>();
-  const [currentDescription, setCurrentDescription] = useState<Option | null>();
-
-  const getData = async () => {
-    const defaultTasks = formDataController("task").get();
-    const defaultDescriptions = formDataController("description").get();
-
-    setOptionsTask(defaultTasks);
-    setOptionsDescription(defaultDescriptions);
-  };
-
-  const addData = (type: FormData, newItem: Option) => {
-    formDataController(type).save(newItem);
-
-    if (type === "task") setTask(newItem);
-    else setDescription(newItem);
-
-    getData();
-  };
+export const TaskInfoForm = () => {
+  const {
+    timerMode,
+    task,
+    setTask,
+    description,
+    setDescription,
+    optionsTask,
+    optionsDescription,
+    getData,
+    addData,
+  } = useConfig();
 
   const clearData = (type: FormData) => {
     Swal.fire({
@@ -56,17 +35,14 @@ export const TaskInfoForm = ({
     }).then((result) => {
       if (result.isConfirmed) {
         formDataController(type).remove(
-          type === "task" ? currentTask?.value : currentDescription?.value
+          type === "task" ? task?.value : description?.value
         );
 
         if (type === "task") {
-          setTask(null)
-          setCurrentTask(null)
+          setTask(null);
+        } else {
+          setDescription(null);
         }
-        else {
-          setDescription(null)
-          setCurrentDescription(null)
-        };
 
         getData();
       }
@@ -76,6 +52,8 @@ export const TaskInfoForm = ({
   useEffect(() => {
     getData();
   }, []);
+
+  if (timerMode === "minimalist") return null;
 
   return (
     <div className="task-info-form">
@@ -87,7 +65,6 @@ export const TaskInfoForm = ({
             id="select-task"
             onChange={(task) => {
               setTask(task);
-              setCurrentTask(task);
             }}
             onCreateOption={(task) =>
               addData("task", {
@@ -120,7 +97,6 @@ export const TaskInfoForm = ({
             id="select-description"
             onChange={(description) => {
               setDescription(description);
-              setCurrentDescription(description);
             }}
             onCreateOption={(description) =>
               addData("description", {

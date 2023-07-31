@@ -6,6 +6,8 @@ body {
   --color-five: #282c34;
   --color-six: #FFF;
   --color-seven: #000;
+
+  --max-resolution-minimal: 234px;
 }
 
 .App {

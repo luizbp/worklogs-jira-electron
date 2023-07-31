@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.5.0] - 2023-07-31
+
+### Added
+
+- [Issue #25](https://github.com/luizbp/clockwork-jira-electron/issues/25) - Put a summary of hours worked in the day
+- [Issue #24](https://github.com/luizbp/clockwork-jira-electron/issues/24) - Shrink the fonts so that the collapsed window is smaller
+
 ## [0.4.0] - 2023-04-14
 
 ### Added

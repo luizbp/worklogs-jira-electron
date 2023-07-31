@@ -89,3 +89,22 @@ a.button--circle-primary:hover, a.button--circle-secundary:hover {
   width: 20px;
   height: 20px;
 }
+
+@media screen and (max-width: 234px) {
+  .number {
+    font-size: 30px;
+  }
+
+  .description{
+    font-size: 15px;
+  }
+
+  .box--timer-controls {
+    margin-top: 10px;
+  }
+
+  .box--timer-controls svg {
+    width: 25px;
+    height: 25px;
+  }
+}

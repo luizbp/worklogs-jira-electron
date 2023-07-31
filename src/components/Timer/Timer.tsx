@@ -212,10 +212,6 @@ export const Timer = () => {
           {("0" + Math.floor((time / 1000) % 60)).slice(-2)}
           <span className="description">seg</span>
         </div>
-        <div className="number miliseconds">
-          ,{("0" + ((time / 10) % 100)).slice(-2)}
-          <span className="description"></span>
-        </div>
       </div>
       <div className="box--timer-controls">
         <a

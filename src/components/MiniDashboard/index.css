@@ -1,0 +1,19 @@
+.mini-dashboard--worked-hours {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+}
+
+.mini-dashboard--worked-hours-icon {
+  height: 20px;
+  width: 20px;
+  color: var(--color-first);
+}
+
+.mini-dashboard--worked-hours-value {
+  margin: 0;
+  height: 20px;
+  font-size: 15px;
+  font-weight: bold;
+}

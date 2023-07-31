@@ -14,7 +14,7 @@ function App() {
           <div className="box-config-buttons">
             <ResolutionButton />
           </div>
-          <MiniDashboard workedHours="2h 20m"/>
+          <MiniDashboard />
           <TaskInfoForm />
           <Timer />
         </header>

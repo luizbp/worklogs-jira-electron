@@ -25,7 +25,9 @@ export const workLogsController = () => {
     localStorage.setItem(type, JSON.stringify(newLogs));
   } 
 
-  const get = () => {
+  const get = (): {
+    logs: WorkLog[]
+  } => {
     const defaultLogs = localStorage.getItem(type);
 
     return {

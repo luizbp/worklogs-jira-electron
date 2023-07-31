@@ -6,8 +6,8 @@ const isDev = require("electron-is-dev");
 const widthWindowMode = 820
 const heigthWindowMode = 550
 
-const widthMinimalistMode = 195
-const heigthMinimalistMode = 205
+const widthMinimalistMode = 150
+const heigthMinimalistMode = 185
 const maxWidthMinimalistMode = 250
 const maxHeigthMinimalistMode = 250
 

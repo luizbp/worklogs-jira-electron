@@ -1,15 +1,16 @@
+import { useConfig } from "../../contexts/ConfigContext";
 import "./index.css";
 
 import { MdWorkHistory } from "react-icons/md";
 
-type MiniDashboardProps = {
-  workedHours: string;
-};
-
-export const MiniDashboard = ({ workedHours }: MiniDashboardProps) => {
+export const MiniDashboard = () => {
+  const {
+    workedHours
+  } = useConfig();
+  
   return (
     <div className="mini-dashboard">
-      <div className="mini-dashboard--worked-hours">
+      <div className="mini-dashboard--worked-hours" title="Horas trabalhadas">
         <MdWorkHistory className="mini-dashboard--worked-hours-icon"/>
         <p className="mini-dashboard--worked-hours-value">{workedHours}</p>
       </div>

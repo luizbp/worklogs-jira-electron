@@ -10,3 +10,11 @@
   transition: 0.2s;
   opacity: 0.8;
 }
+
+
+@media screen and (max-width: 234px) {
+  .button {
+    width: 20px;
+    height: 20px;
+  }
+}

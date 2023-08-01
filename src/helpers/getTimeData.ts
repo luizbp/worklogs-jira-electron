@@ -17,14 +17,29 @@ export const getTimeData = (logs: WorkLog[]) => {
         workedHours += dateIsToday ? parseInt(registry.replace('h', '')) : 0
       }
       else if (registry.includes('m')) {
-        pointedMinutes += parseInt(registry.replace('m', ''))
-        workedMinutes += dateIsToday ? parseInt(registry.replace('m', '')) : 0
+        let currentMinutes = parseInt(registry.replace('m', ''))
+        const hoursByMinutes = parseInt((currentMinutes / 60).toFixed(0))
+
+        if(hoursByMinutes > 0) {
+          currentMinutes -= 60 * hoursByMinutes
+          
+          pointedHours += hoursByMinutes
+          workedHours += dateIsToday ? hoursByMinutes : 0
+
+        }
+
+        pointedMinutes += currentMinutes
+        workedMinutes += dateIsToday ? currentMinutes : 0
       }
     })
   })
 
+
+  const isSixtyMinutePointed = pointedMinutes === 60
+  const isSixtyMinuteWorked = workedMinutes === 60
+
   return {
-    pointedHours: `${pointedHours}h ${pointedMinutes}m`,
-    workingHoursToday: `${workedHours}h ${workedMinutes}m`
+    pointedHours: `${pointedHours + (isSixtyMinutePointed ? 1 : 0)}h ${isSixtyMinutePointed ? 0 : pointedMinutes}m`,
+    workingHoursToday: `${workedHours + (isSixtyMinuteWorked ? 1 : 0)}h ${isSixtyMinuteWorked ? 0 : workedMinutes}m`
   }
 }

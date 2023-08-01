@@ -1,6 +1,7 @@
 .mini-dashboard {
   display: flex;
   gap: 5px;
+  margin-bottom: 5px;
 }
 
 .mini-dashboard--worked-hours,
@@ -51,5 +52,9 @@
   .mini-dashboard--pointed-hours-value {
     font-size: 12px;
     height: 15px;
+  }
+
+  .mini-dashboard--pointed-hours {
+    display: none;
   }
 }

@@ -3,6 +3,7 @@
   height: 25px;
   transition: 0.2s;
   transform: rotate(90deg);
+  margin-bottom: 5px;
 }
 
 .button:hover {

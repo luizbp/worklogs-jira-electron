@@ -9,6 +9,7 @@ import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import { WorkLogs } from "../../types/WorkLogs";
 import { BsFillTrashFill } from "react-icons/bs";
+import { getFormattedDate } from "../../helpers/getFormattedDate";
 
 type TableLogsParams = {
   logs: WorkLogs | [];
@@ -16,6 +17,12 @@ type TableLogsParams = {
 };
 
 export const TableLogs = ({ logs, deleteWorkLog }: TableLogsParams) => {
+
+  const getStartDateFormatted = (startDate: string) => {
+    const fullDate = getFormattedDate(new Date(startDate));
+    return <>{`${fullDate.date} - ${fullDate.hour}`}</>;
+  }
+  
   return (
     <TableContainer sx={{ maxHeight: "350px" }} component={Paper}>
       <Table aria-label="simple table">
@@ -42,7 +49,7 @@ export const TableLogs = ({ logs, deleteWorkLog }: TableLogsParams) => {
                     navigator.clipboard.writeText(row.startDateFormatted);
                   }}
                 >
-                  {row.startDate}
+                  {getStartDateFormatted(row.startDate)}
                 </p>
               </TableCell>
               <TableCell>

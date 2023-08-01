@@ -26,7 +26,7 @@ export const Timer = () => {
   const [isActive, setIsActive] = useState(false);
   const [isPaused, setIsPaused] = useState(true);
   const [time, setTime] = useState(0);
-  const [startDate, setStartDate] = useState("");
+  const [startDate, setStartDate] = useState<Date>();
   const [StartHour, setStartHour] = useState("");
 
   const [openModalLogs, setOpenModalLogs] = useState(false);
@@ -116,10 +116,10 @@ export const Timer = () => {
       setIsActive(true);
       setIsPaused(false);
 
-      const fullDate = getFormattedDate(new Date());
+      // const fullDate = getFormattedDate(new Date());
 
-      setStartDate(fullDate.date);
-      setStartHour(fullDate.hour);
+      setStartDate(new Date());
+      setStartHour(getFormattedDate(new Date()).hour);
 
       return;
     }
@@ -179,7 +179,7 @@ export const Timer = () => {
       workLog.save({
         newItem: {
           id: Date.now().toString(),
-          startDate: `${startDate} - ${StartHour}`,
+          startDate: startDate?.toISOString() || '',
           startDateFormatted: StartHour,
           description: description?.value || "",
           task: task?.value || "",

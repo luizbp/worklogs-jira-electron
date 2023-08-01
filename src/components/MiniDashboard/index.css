@@ -1,17 +1,39 @@
-.mini-dashboard--worked-hours {
+.mini-dashboard {
+  display: flex;
+  gap: 5px;
+}
+
+.mini-dashboard--worked-hours,
+.mini-dashboard--pointed-hours {
   display: flex;
   justify-content: center;
   align-items: center;
   gap: 5px;
 }
 
-.mini-dashboard--worked-hours-icon {
+.mini-dashboard--worked-hours,
+.mini-dashboard--pointed-hours {
+  background-color: #131313;
+  padding: 5px 10px;
+  border-radius: 10px;
+}
+
+.mini-dashboard--worked-hours-icon,
+.mini-dashboard--pointed-hours-icon {
   height: 20px;
   width: 20px;
+}
+
+.mini-dashboard--worked-hours-icon {
+  color: var(--color-fourth);
+}
+
+.mini-dashboard--pointed-hours-icon {
   color: var(--color-first);
 }
 
-.mini-dashboard--worked-hours-value {
+.mini-dashboard--worked-hours-value,
+.mini-dashboard--pointed-hours-value {
   margin: 0;
   height: 20px;
   font-size: 15px;
@@ -19,12 +41,14 @@
 }
 
 @media screen and (max-width: 234px) {
-  .mini-dashboard--worked-hours-icon {
+  .mini-dashboard--worked-hours-icon,
+  .mini-dashboard--pointed-hours-icon {
     height: 15px;
     width: 15px;
   }
 
-  .mini-dashboard--worked-hours-value {
+  .mini-dashboard--worked-hours-value,
+  .mini-dashboard--pointed-hours-value {
     font-size: 12px;
     height: 15px;
   }

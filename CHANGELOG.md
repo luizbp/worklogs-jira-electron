@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.6.0] - 2023-08-01
+
+### Added
+
+- [Issue #27](https://github.com/luizbp/clockwork-jira-electron/issues/27) - Put on the minidashboard the hours worked in the day and the hours indicated
+
 ## [0.5.0] - 2023-07-31
 
 ### Added

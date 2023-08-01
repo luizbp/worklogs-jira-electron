@@ -74,7 +74,7 @@ export const ModalManualLog = ({
         workLog.save({
           newItem: {
             id: Date.now().toString(),
-            startDate: dateFormated,
+            startDate: new Date(startDate).toISOString(),
             startDateFormatted: fullDate.hour,
             description: description.value,
             task: task.value,

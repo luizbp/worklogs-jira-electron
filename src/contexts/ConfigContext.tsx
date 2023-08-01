@@ -15,7 +15,7 @@ import type { FormData } from "../types/FormData";
 import { formDataController } from "../services/SaveDataLocal/formDataController";
 import { workLogsController } from "../services/SaveDataLocal/workLogsController";
 import { WorkLogs } from "../types/WorkLogs";
-import { getHoursWorked } from "../helpers/getHoursWorked";
+import { getTimeData } from "../helpers/getTimeData";
 
 interface ConfigValue {
   timerMode: TimerMode | undefined;
@@ -32,6 +32,7 @@ interface ConfigValue {
   addData: (type: FormData, newItem: Option) => void
   getWorkLog: () => void
   workedHours: string
+  pointedHours: string
 }
 
 const ConfigContext = createContext<ConfigValue | null>(null);
@@ -44,6 +45,7 @@ const ConfigProvider = ({ children }: any) => {
   const [optionsTask, setOptionsTask] = useState([]);
   const [optionsDescription, setOptionsDescription] = useState([]);
   const [workedHours, setWorkedHours] = useState('');
+  const [pointedHours, setPointedHours] = useState('');
 
   const getData = async () => {
     const defaultTasks = formDataController("task").get();
@@ -66,7 +68,9 @@ const ConfigProvider = ({ children }: any) => {
     const workLog = workLogsController();
 
     const { logs: defaultLogs } = workLog.get();
-    setWorkedHours(getHoursWorked(defaultLogs))
+    const timeData = getTimeData(defaultLogs)
+    setWorkedHours(timeData.workingHoursToday)
+    setPointedHours(timeData.pointedHours)
 
     setLogs(defaultLogs);
   };
@@ -95,7 +99,8 @@ const ConfigProvider = ({ children }: any) => {
         logs,
         setLogs,
         getWorkLog,
-        workedHours
+        workedHours,
+        pointedHours
       }}
     >
       {children}

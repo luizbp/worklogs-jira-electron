@@ -1,5 +1,31 @@
 import { WorkLog } from "../types/WorkLogs";
 
+
+type GetPointFormatedParams = {
+  hours: number
+  minutes: number
+}
+
+const formatResult = ({hours, minutes}:GetPointFormatedParams) => {
+  const hoursByMinutes = parseInt(`${minutes / 60}`)
+
+  if(hoursByMinutes > 0) {
+    minutes -= 60 * hoursByMinutes
+    
+    hours += hoursByMinutes
+
+    if(minutes === 60) {
+      minutes = 0
+      hours += 1 
+    }
+  }
+
+  return {
+    hours,
+    minutes
+  }
+}
+
 export const getTimeData = (logs: WorkLog[]) => {
 
   let pointedHours = 0
@@ -18,15 +44,6 @@ export const getTimeData = (logs: WorkLog[]) => {
       }
       else if (registry.includes('m')) {
         let currentMinutes = parseInt(registry.replace('m', ''))
-        const hoursByMinutes = parseInt((currentMinutes / 60).toFixed(0))
-
-        if(hoursByMinutes > 0) {
-          currentMinutes -= 60 * hoursByMinutes
-          
-          pointedHours += hoursByMinutes
-          workedHours += dateIsToday ? hoursByMinutes : 0
-
-        }
 
         pointedMinutes += currentMinutes
         workedMinutes += dateIsToday ? currentMinutes : 0
@@ -34,12 +51,17 @@ export const getTimeData = (logs: WorkLog[]) => {
     })
   })
 
-
-  const isSixtyMinutePointed = pointedMinutes === 60
-  const isSixtyMinuteWorked = workedMinutes === 60
-
+  const pointedHoursFormated = formatResult({
+    hours: pointedHours,
+    minutes: pointedMinutes
+  })
+  const workingHoursTodayFormated = formatResult({
+    hours: workedHours,
+    minutes: workedMinutes
+  })
+  
   return {
-    pointedHours: `${pointedHours + (isSixtyMinutePointed ? 1 : 0)}h ${isSixtyMinutePointed ? 0 : pointedMinutes}m`,
-    workingHoursToday: `${workedHours + (isSixtyMinuteWorked ? 1 : 0)}h ${isSixtyMinuteWorked ? 0 : workedMinutes}m`
+    pointedHours: `${pointedHoursFormated.hours}h ${pointedHoursFormated.minutes}m`,
+    workingHoursToday: `${workingHoursTodayFormated.hours}h ${workingHoursTodayFormated.minutes}m`
   }
 }

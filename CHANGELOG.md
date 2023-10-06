@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.7.0] - 2023-10-06
+
 ### Added
 
 - [Issue #23](https://github.com/luizbp/clockwork-jira-electron/issues/23) - Add rule that when it is over 30 seconds, it will be considered as "1 min more" if the timer is stopped

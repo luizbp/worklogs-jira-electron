@@ -20,8 +20,6 @@ import { workLogsController } from "../../services/SaveDataLocal/workLogsControl
 import { getFormattedDate } from "../../helpers/getFormattedDate";
 import { useConfig } from "../../contexts/ConfigContext";
 
-
-
 export const Timer = () => {
   const [isActive, setIsActive] = useState(false);
   const [isPaused, setIsPaused] = useState(true);
@@ -31,7 +29,8 @@ export const Timer = () => {
 
   const [openModalLogs, setOpenModalLogs] = useState(false);
   const [openModalManualLogs, setOpenModalManualLogs] = useState(false);
-  const { timerMode, setTimerMode, task, description, getWorkLog } = useConfig();
+  const { timerMode, setTimerMode, task, description, getWorkLog } =
+    useConfig();
 
   useEffect(() => {
     let interval: any = null;
@@ -85,8 +84,8 @@ export const Timer = () => {
 
   const validateFields = (): boolean => {
     if (!task) {
-      setTimerMode('window')
-      
+      setTimerMode("window");
+
       Swal.fire({
         title: "Ops...",
         text: "Task not informed",
@@ -96,7 +95,7 @@ export const Timer = () => {
     }
 
     if (!description) {
-      setTimerMode('window')
+      setTimerMode("window");
 
       Swal.fire({
         title: "Ops...",
@@ -137,11 +136,15 @@ export const Timer = () => {
     if (!validateFields()) return;
 
     const hour = Math.floor((time / 3600000) % 60);
-    const min = Math.floor((time / 60000) % 60);
+    let min = Math.floor((time / 60000) % 60);
+
+    if (Math.floor((time / 1000) % 60) >= 30) {
+      min += 1;
+    }
 
     handleStarPauseResume(true);
 
-    setTimerMode('window')
+    setTimerMode("window");
 
     if (!hour && !min) {
       const result = await Swal.fire({
@@ -179,7 +182,7 @@ export const Timer = () => {
       workLog.save({
         newItem: {
           id: Date.now().toString(),
-          startDate: startDate?.toISOString() || '',
+          startDate: startDate?.toISOString() || "",
           startDateFormatted: StartHour,
           description: description?.value || "",
           task: task?.value || "",
@@ -259,7 +262,7 @@ export const Timer = () => {
           href="#"
           title={"Add Manual"}
           onClick={() => {
-            setTimerMode('window')
+            setTimerMode("window");
             setOpenModalManualLogs(true);
           }}
         >

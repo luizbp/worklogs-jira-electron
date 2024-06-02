@@ -1,0 +1,86 @@
+// services/auth-service.js
+
+const axios = require("axios");
+const url = require("url");
+const envVariables = require("../env-variables");
+const { randomUUID } = require("crypto");
+
+const { auth0Domain, clientId, clientSecret, api0Domain } = envVariables;
+
+const redirectUri = "http://localhost/callback";
+
+let sessionJiraData = null;
+
+function getSessionJiraData() {
+  return sessionJiraData;
+}
+
+function getAuthenticationURL() {
+  return `https://${auth0Domain}/authorize?audience=api.atlassian.com&state=${randomUUID()}&client_id=${clientId}&scope=write:jira-work&response_type=code&redirect_uri=${redirectUri}&prompt=consent`;
+}
+
+async function loadTokens(callbackURL) {
+  const urlParts = url.parse(callbackURL, true);
+  const query = urlParts.query;
+
+  const exchangeOptions = {
+    grant_type: "authorization_code",
+    client_id: clientId,
+    client_secret: clientSecret,
+    code: query.code,
+    redirect_uri: redirectUri,
+  };
+
+  const optionsToken = {
+    method: "POST",
+    url: `https://${auth0Domain}/oauth/token`,
+    headers: {
+      "content-type": "application/json",
+    },
+    data: JSON.stringify(exchangeOptions),
+  };
+
+  try {
+    const responseToken = await axios(optionsToken);
+
+    const optionsCloundId = {
+      method: "GET",
+      url: `https://${api0Domain}/oauth/token/accessible-resources`,
+      headers: {
+        "content-type": "application/json",
+        Authorization: `Bearer ${responseToken.data.access_token}`
+      }
+    };
+
+    const responseCloundId = await axios(optionsCloundId);
+    console.log("TCL: loadTokens -> responseCloundId", responseCloundId)
+
+    sessionJiraData = {
+      accessToken: responseToken.data.access_token,
+      expiresIn: responseToken.data.expires_in,
+      accessibleResources: responseCloundId.data
+    }
+
+  } catch (error) {
+    await logout();
+
+    throw error;
+  }
+}
+
+
+async function logout() {
+  sessionJiraData = null;
+}
+
+function getLogOutUrl() {
+  return `https://${auth0Domain}/v2/logout`;
+}
+
+module.exports = {
+  getSessionJiraData,
+  getAuthenticationURL,
+  getLogOutUrl,
+  loadTokens,
+  logout
+};

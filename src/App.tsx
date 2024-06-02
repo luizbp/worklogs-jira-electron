@@ -5,6 +5,7 @@ import { Timer } from "./components/Timer/Timer";
 import ConfigProvider from "./contexts/ConfigContext";
 import { ResolutionButton } from "./components/ResolutionButton/ResolutionButton";
 import { MiniDashboard } from "./components/MiniDashboard/MiniDashboard";
+import { LoginButton } from "./components/LoginButton/LoginButton";
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
         <header className="App-header">
           <div className="box-config-buttons">
             <ResolutionButton />
+            <LoginButton/>
           </div>
           <MiniDashboard />
           <TaskInfoForm />

@@ -16,3 +16,7 @@ export const setInitialTimerMode = ({callBack}:SetInitialTimerModeParams) => {
   if(callBack) callBack()
   ipcRenderer.invoke('set-initial-timer-mode', '')
 }
+
+export const onLoginSucess = (callBack: () => any) => {
+  
+}

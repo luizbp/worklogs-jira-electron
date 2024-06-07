@@ -1,9 +1,10 @@
 .button {
-  width: 25px;
-  height: 25px;
+  width: 24px;
+  height: 24px;
   transition: 0.2s;
   transform: rotate(90deg);
   margin-bottom: 5px;
+  color: white;
 }
 
 .button:hover {

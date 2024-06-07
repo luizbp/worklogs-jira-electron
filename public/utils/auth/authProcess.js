@@ -1,9 +1,9 @@
 const { BrowserWindow } = require('electron');
-const authService = require('./services/auth-service');
+const authService = require('./authService');
 
 let win = null;
 
-async function createAuthWindow() {
+async function createAuthWindow(winMain) {
   destroyAuthWin();
 
   win = new BrowserWindow({
@@ -11,8 +11,10 @@ async function createAuthWindow() {
     height: 600,
     webPreferences: {
       nodeIntegration: false,
-      enableRemoteModule: false
-    }
+      enableRemoteModule: false,
+    },
+    maximizable: false,
+    minimizable: false,
   });
 
   const urlLoad = authService.getAuthenticationURL()
@@ -30,6 +32,8 @@ async function createAuthWindow() {
   webRequest.onBeforeRequest(filter, async ({url}) => {
     try {
         await authService.loadTokens(url);
+        await winMain.webContents.executeJavaScript(`window.localStorage.setItem("worlogs-jira-session-data", '${JSON.stringify(authService.getSessionJiraData())}');`);
+        winMain.reload();
         return destroyAuthWin();
     } catch (error) {
         console.log("TCL: createAuthWindow -> error", error)

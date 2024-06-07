@@ -1,5 +1,6 @@
 {
   "auth0Domain": "",
+  "api0Domain": "",
   "clientId": "",
   "clientSecret": ""
 }

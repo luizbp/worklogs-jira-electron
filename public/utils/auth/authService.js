@@ -2,7 +2,7 @@
 
 const axios = require("axios");
 const url = require("url");
-const envVariables = require("../env-variables");
+const envVariables = require("../../env-variables");
 const { randomUUID } = require("crypto");
 
 const { auth0Domain, clientId, clientSecret, api0Domain } = envVariables;
@@ -16,7 +16,7 @@ function getSessionJiraData() {
 }
 
 function getAuthenticationURL() {
-  return `https://${auth0Domain}/authorize?audience=api.atlassian.com&state=${randomUUID()}&client_id=${clientId}&scope=write:jira-work&response_type=code&redirect_uri=${redirectUri}&prompt=consent`;
+  return `https://${auth0Domain}/authorize?audience=api.atlassian.com&state=${randomUUID()}&client_id=${clientId}&scope=write:jira-work read:me offline_access&response_type=code&redirect_uri=${redirectUri}&prompt=consent`;
 }
 
 async function loadTokens(callbackURL) {
@@ -53,10 +53,10 @@ async function loadTokens(callbackURL) {
     };
 
     const responseCloundId = await axios(optionsCloundId);
-    console.log("TCL: loadTokens -> responseCloundId", responseCloundId)
 
     sessionJiraData = {
       accessToken: responseToken.data.access_token,
+      refresh_token: responseToken.data.refresh_token,
       expiresIn: responseToken.data.expires_in,
       accessibleResources: responseCloundId.data
     }

@@ -5,6 +5,7 @@
   width: 80%;
   margin: 15px 0;
   text-align: left;
+  color: white;
 }
 
 .select-task label, .select-description label{

@@ -1,9 +1,4 @@
-import React, {
-  createContext,
-  useContext,
-  useEffect,
-  useState,
-} from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
 import { TimerMode } from "../types/configs";
 import {
   setInitialTimerMode,
@@ -22,17 +17,17 @@ interface ConfigValue {
   setTimerMode: (timerMode: TimerMode) => void;
   task: Option | null | undefined;
   description: Option | null | undefined;
-  logs: WorkLogs
+  logs: WorkLogs;
   setLogs: (logs: WorkLogs) => any;
   setTask: (task: Option | null) => any;
   setDescription: (description: Option | null) => any;
-  optionsTask: Array<any>
-  optionsDescription: Array<any>
-  getData: () => void
-  addData: (type: FormData, newItem: Option) => void
-  getWorkLog: () => void
-  workedHours: string
-  pointedHours: string
+  optionsTask: Array<any>;
+  optionsDescription: Array<any>;
+  getData: () => void;
+  addData: (type: FormData, newItem: Option) => void;
+  getWorkLog: () => void;
+  workedHours: string;
+  pointedHours: string;
 }
 
 const ConfigContext = createContext<ConfigValue | null>(null);
@@ -44,8 +39,8 @@ const ConfigProvider = ({ children }: any) => {
   const [description, setDescription] = useState<Option | null>();
   const [optionsTask, setOptionsTask] = useState([]);
   const [optionsDescription, setOptionsDescription] = useState([]);
-  const [workedHours, setWorkedHours] = useState('');
-  const [pointedHours, setPointedHours] = useState('');
+  const [workedHours, setWorkedHours] = useState("");
+  const [pointedHours, setPointedHours] = useState("");
 
   const getData = async () => {
     const defaultTasks = formDataController("task").get();
@@ -68,9 +63,9 @@ const ConfigProvider = ({ children }: any) => {
     const workLog = workLogsController();
 
     const { logs: defaultLogs } = workLog.get();
-    const timeData = getTimeData(defaultLogs)
-    setWorkedHours(timeData.workingHoursToday)
-    setPointedHours(timeData.pointedHours)
+    const timeData = getTimeData(defaultLogs);
+    setWorkedHours(timeData.workingHoursToday);
+    setPointedHours(timeData.pointedHours);
 
     setLogs(defaultLogs);
   };
@@ -79,8 +74,8 @@ const ConfigProvider = ({ children }: any) => {
     if (timerMode === "minimalist") setMinimalistTimerMode({});
     else setInitialTimerMode({});
 
-    getData()
-    getWorkLog()
+    getData();
+    getWorkLog();
   }, [timerMode]);
 
   return (
@@ -100,7 +95,7 @@ const ConfigProvider = ({ children }: any) => {
         setLogs,
         getWorkLog,
         workedHours,
-        pointedHours
+        pointedHours,
       }}
     >
       {children}

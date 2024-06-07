@@ -1,12 +1,12 @@
-.button {
+.button-login {
   width: 25px;
   height: 25px;
   transition: 0.2s;
-  transform: rotate(90deg);
   margin-bottom: 5px;
+  color: white;
 }
 
-.button:hover {
+.button-login:hover {
   cursor: pointer;
   transition: 0.2s;
   opacity: 0.8;
@@ -14,8 +14,11 @@
 
 
 @media screen and (max-width: 234px) {
-  .button {
-    width: 20px;
-    height: 20px;
+  .button-login {
+    display: none;
+  }
+
+  .avatar-logged {
+    display: none;
   }
 }

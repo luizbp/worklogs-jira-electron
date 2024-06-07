@@ -2,8 +2,8 @@ const { app, BrowserWindow, ipcMain } = require("electron");
 const path = require("path");
 
 const isDev = require("electron-is-dev");
-const authService = require('./services/auth-service');
-const authProcess = require('./auth-process')
+const authService = require('./utils/auth/authService');
+const authProcess = require('./utils/auth/authProcess')
 
 const widthWindowMode = 820;
 const heigthWindowMode = 550;
@@ -64,12 +64,11 @@ app.whenReady().then(() => {
     win.center();
     win.setAlwaysOnTop(false);
   });
-  ipcMain.handle("logon", async (event, ...args) => {
-    authProcess.createAuthWindow()
+  ipcMain.handle("auth:logon", async (event, ...args) => {
+    authProcess.createAuthWindow(win)
   });
-
-  ipcMain.handle("logout", async (event, ...args) => {
-    authProcess.createLogoutWindow()
+  ipcMain.on("reload-page", () => {
+    win.reload();
   });
 
   app.on("activate", () => {

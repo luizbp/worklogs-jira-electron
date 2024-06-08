@@ -11,6 +11,7 @@ type AccessibleResourcesType = {
     url: string
     scopes: string[]
     avatarUrl: string
+    selected: boolean
 }
 
 export type UserLogged = {

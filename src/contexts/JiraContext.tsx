@@ -8,9 +8,10 @@ import type {
 } from "axios";
 import axios from "axios";
 import { getNewToken } from "../services/Jira/getNewToken";
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, { createContext, useContext, useEffect, useRef, useState } from "react";
 import { useLocalStorage } from "@uidotdev/usehooks";
 import { SessionJiraDataType, UserLogged } from "../types/Jira";
+import { CreateWorkLog } from "../types/WorkLogs";
 
 export interface PersistConfig extends AxiosRequestConfig {
   retry?: number;
@@ -50,7 +51,8 @@ interface JiraValue {
   userLogged: UserLogged | null | undefined;
   setUserLogged: (userLogged: UserLogged | null) => any;
   getProfileData: () => Promise<Profile | null>
-  createWorkLog: (props: CreateWorkLogParams) => void
+  createWorkLog: (props: CreateWorkLogParams) => Promise<AxiosResponse<CreateWorkLog, any>>
+  cloudIdSelected: React.MutableRefObject<string | null>
 }
 
 const JiraContext = createContext<JiraValue | null>(null);
@@ -62,6 +64,7 @@ const JiraProvider = ({ children }: any) => {
       null
     );
   const [userLogged, setUserLogged] = useState<UserLogged | null>(null);
+  const cloudIdSelected = useRef<string | null>(null);
 
   const axiosPersist: AxiosInstance = axios.create();
 
@@ -73,7 +76,6 @@ const JiraProvider = ({ children }: any) => {
       } = err;
 
       const config = err.config as PersistConfig;
-
       if (
         config?.retry &&
         config.retry - 1 > 0 &&
@@ -81,18 +83,25 @@ const JiraProvider = ({ children }: any) => {
         sessionJiraData
       ) {
         config.retry -= 1;
-
+      
         const data = await getNewToken({
           refreshToken: sessionJiraData.refresh_token,
         });
-
+          
         setSessionJiraData({
           ...sessionJiraData,
           accessToken: data.access_token,
           refresh_token: data.refresh_token,
         });
 
-        return axiosPersist.request(config);
+
+        return axiosPersist.request({
+          ...config,
+          headers: {
+            ...config.headers,
+            Authorization: `Bearer ${data.access_token}`,
+          }
+        });
       }
 
       return Promise.reject(err);
@@ -109,7 +118,8 @@ const JiraProvider = ({ children }: any) => {
           Authorization: `Bearer ${sessionJiraData.accessToken}`,
           Accept: "application/json",
         },
-      }
+        retry: 2,
+      } as PersistConfig
     );
 
     return data;
@@ -129,8 +139,8 @@ const JiraProvider = ({ children }: any) => {
     if (!cloudId) throw new Error("cloudId not informed");
     if (!started) started = new Date().toISOString();
 
-    return axios.post(
-      `https://api.atlassian.com/ex/jira/${cloudId}/rest/3/issue/${task}/worklog`,
+    return axiosPersist.post<CreateWorkLog>(
+      `https://api.atlassian.com/ex/jira/${cloudId}/rest/api/3/issue/${task}/worklog`,
       {
         timeSpent: time,
         comment: {
@@ -156,7 +166,8 @@ const JiraProvider = ({ children }: any) => {
           Accept: "application/json",
           "Content-Type": "application/json",
         },
-      }
+        retry: 2,
+      }  as PersistConfig
     );
   };
 
@@ -175,6 +186,12 @@ const JiraProvider = ({ children }: any) => {
     }
   },[])
 
+  useEffect(() => {
+    if(sessionJiraData) {
+      cloudIdSelected.current = sessionJiraData.accessibleResources.find(resource => resource.selected)?.id ?? null
+    }
+  }, [sessionJiraData])
+
   return (
     <JiraContext.Provider
       value={{
@@ -183,7 +200,8 @@ const JiraProvider = ({ children }: any) => {
         userLogged,
         setUserLogged,
         getProfileData,
-        createWorkLog
+        createWorkLog,
+        cloudIdSelected
       }}
     >
       {children}

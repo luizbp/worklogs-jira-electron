@@ -19,6 +19,8 @@ import { ModalManualLog } from "../ModalManualLog/ModalManualLog";
 import { workLogsController } from "../../services/SaveDataLocal/workLogsController";
 import { getFormattedDate } from "../../helpers/getFormattedDate";
 import { useConfig } from "../../contexts/ConfigContext";
+import { WorkLog } from "../../types/WorkLogs";
+import { useJira } from "../../contexts/JiraContext";
 
 export const Timer = () => {
   const [isActive, setIsActive] = useState(false);
@@ -31,6 +33,7 @@ export const Timer = () => {
   const [openModalManualLogs, setOpenModalManualLogs] = useState(false);
   const { timerMode, setTimerMode, task, description, getWorkLog } =
     useConfig();
+  const { cloudIdSelected, createWorkLog } = useJira();
 
   useEffect(() => {
     let interval: any = null;
@@ -179,15 +182,39 @@ export const Timer = () => {
     if (result.isConfirmed) {
       const workLog = workLogsController();
 
+      let newItem = {
+        id: Date.now().toString(),
+        startDate: startDate?.toISOString() || "",
+        startDateFormatted: StartHour,
+        description: description?.value || "",
+        task: task?.value || "",
+        time: completTime
+      } as WorkLog;
+
+      try {
+        if (cloudIdSelected.current) {
+          await createWorkLog({
+            description: newItem.description,
+            started: newItem.startDate.replaceAll("Z", "+0000"),
+            task: newItem.task,
+            time: newItem.time,
+            cloudId: cloudIdSelected.current,
+          });
+
+          newItem.integration = {
+            registered: true,
+            msg: "Successfully registered",
+          };
+        }
+      } catch (err: any) {
+        newItem.integration = {
+          registered: false,
+          msg: err?.response?.data?.message ?? "Error",
+        };
+      }
+
       workLog.save({
-        newItem: {
-          id: Date.now().toString(),
-          startDate: startDate?.toISOString() || "",
-          startDateFormatted: StartHour,
-          description: description?.value || "",
-          task: task?.value || "",
-          time: completTime,
-        },
+        newItem
       });
 
       getWorkLog();

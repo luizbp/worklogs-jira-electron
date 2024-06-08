@@ -16,7 +16,8 @@ function getSessionJiraData() {
 }
 
 function getAuthenticationURL() {
-  return `https://${auth0Domain}/authorize?audience=api.atlassian.com&state=${randomUUID()}&client_id=${clientId}&scope=write:jira-work read:me offline_access&response_type=code&redirect_uri=${redirectUri}&prompt=consent`;
+  const scopes = "write:jira-work read:me offline_access write:issue-worklog:jira write:issue-worklog.property:jira read:avatar:jira read:group:jira read:issue-worklog:jira read:project-role:jira read:user:jira read:issue-worklog.property:jira"
+  return `https://${auth0Domain}/authorize?audience=api.atlassian.com&state=${randomUUID()}&client_id=${clientId}&scope=${scopes}&response_type=code&redirect_uri=${redirectUri}&prompt=consent`;
 }
 
 async function loadTokens(callbackURL) {
@@ -58,7 +59,12 @@ async function loadTokens(callbackURL) {
       accessToken: responseToken.data.access_token,
       refresh_token: responseToken.data.refresh_token,
       expiresIn: responseToken.data.expires_in,
-      accessibleResources: responseCloundId.data
+      accessibleResources: responseCloundId?.data?.map((resource, index) => {
+        return {
+          ...resource,
+          selected: index === 0
+        }
+      })
     }
 
   } catch (error) {

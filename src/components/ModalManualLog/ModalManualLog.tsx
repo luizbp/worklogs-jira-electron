@@ -11,9 +11,11 @@ import Swal from "sweetalert2";
 import { workLogsController } from "../../services/SaveDataLocal/workLogsController";
 import { getFormattedDate } from "../../helpers/getFormattedDate";
 import { useConfig } from "../../contexts/ConfigContext";
+import { WorkLog } from "../../types/WorkLogs";
+import { useJira } from "../../contexts/JiraContext";
 
 const styleBoxModal = {
-  position: "absolute" as "absolute",
+  position: "absolute",
   top: "50%",
   left: "50%",
   transform: "translate(-50%, -50%)",
@@ -37,13 +39,20 @@ type ModalWorkLogsParams = {
   handleClose: any;
 };
 
-export const ModalManualLog = ({
-  handleClose,
-  open,
-}: ModalWorkLogsParams) => {
+export const ModalManualLog = ({ handleClose, open }: ModalWorkLogsParams) => {
   const [startDate, setStartDate] = useState("");
   const [time, setTime] = useState("");
-  const { task, setTask, description, setDescription, optionsTask, optionsDescription, addData, getWorkLog } = useConfig();
+  const {
+    task,
+    setTask,
+    description,
+    setDescription,
+    optionsTask,
+    optionsDescription,
+    addData,
+    getWorkLog,
+  } = useConfig();
+  const { createWorkLog, cloudIdSelected } = useJira();
 
   const clearFields = () => {
     setStartDate("");
@@ -67,19 +76,43 @@ export const ModalManualLog = ({
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#08979c",
       confirmButtonText: "Save",
-    }).then((result) => {
+    }).then(async (result) => {
       if (result.isConfirmed) {
         const workLog = workLogsController();
 
+        const newItem = {
+          id: Date.now().toString(),
+          startDate: new Date(startDate).toISOString(),
+          startDateFormatted: fullDate.hour,
+          description: description.value,
+          task: task.value,
+          time,
+        } as WorkLog;
+
+        try {
+          if (cloudIdSelected.current) {
+            await createWorkLog({
+              description: newItem.description,
+              started: newItem.startDate.replaceAll("Z", "+0000"),
+              task: newItem.task,
+              time: newItem.time,
+              cloudId: cloudIdSelected.current,
+            });
+
+            newItem.integration = {
+              registered: true,
+              msg: "Successfully registered",
+            };
+          }
+        } catch (err: any) {
+          newItem.integration = {
+            registered: false,
+            msg: err?.response?.data?.message ?? "Error",
+          };
+        }
+
         workLog.save({
-          newItem: {
-            id: Date.now().toString(),
-            startDate: new Date(startDate).toISOString(),
-            startDateFormatted: fullDate.hour,
-            description: description.value,
-            task: task.value,
-            time,
-          },
+          newItem,
         });
 
         getWorkLog();

@@ -7,9 +7,10 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-import { WorkLogs } from "../../types/WorkLogs";
+import { IntegrationData, WorkLogs } from "../../types/WorkLogs";
 import { BsFillTrashFill } from "react-icons/bs";
 import { getFormattedDate } from "../../helpers/getFormattedDate";
+import { Chip } from "@mui/material";
 
 type TableLogsParams = {
   logs: WorkLogs | [];
@@ -22,6 +23,16 @@ export const TableLogs = ({ logs, deleteWorkLog }: TableLogsParams) => {
     const fullDate = getFormattedDate(new Date(startDate));
     return <>{`${fullDate.date} - ${fullDate.hour}`}</>;
   }
+
+  const getInfoIntegration = (data?: IntegrationData) => {
+    if(!data) return <Chip label="Not Registred" size="small" title={'Old version'}/>
+
+    if(data.registered) {
+      return <Chip label="Registred" size="small" color="success" title={data?.msg ?? ''}/>
+    }
+
+    return <Chip label="Error" size="small" color="error" title={data?.msg ?? ''}/>
+  }
   
   return (
     <TableContainer sx={{ maxHeight: "350px" }} component={Paper}>
@@ -32,6 +43,7 @@ export const TableLogs = ({ logs, deleteWorkLog }: TableLogsParams) => {
             <TableCell>Task</TableCell>
             <TableCell>Description</TableCell>
             <TableCell>Time</TableCell>
+            <TableCell>Integration</TableCell>
             <TableCell>Actions</TableCell>
           </TableRow>
         </TableHead>
@@ -84,6 +96,9 @@ export const TableLogs = ({ logs, deleteWorkLog }: TableLogsParams) => {
                 >
                   {row.time}
                 </p>
+              </TableCell>
+              <TableCell>
+              {getInfoIntegration(row.integration)}
               </TableCell>
               <TableCell>
                 <BsFillTrashFill

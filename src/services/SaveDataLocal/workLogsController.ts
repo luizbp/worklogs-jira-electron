@@ -1,4 +1,4 @@
-import { WorkLog, WorkLogs } from "../../types/WorkLogs";
+import { WorkLog, WorkLogFields, WorkLogs } from "../../types/WorkLogs";
 
 type FunctionSaveParams = {
   newItem: WorkLog
@@ -39,11 +39,28 @@ export const workLogsController = () => {
     localStorage.setItem(type, JSON.stringify([]));
   }
 
+  const update = (id: string, field: WorkLogFields, value: any) => {
+    const currentLogs = localStorage.getItem(type);
+    const data = currentLogs ? JSON.parse(currentLogs) as [] : []
+
+    const newLogs = data?.map((data: any) => {
+      if(id !== data.id) return data
+
+      return {
+        ...data,
+        [field]: value
+      }
+    })
+
+    localStorage.setItem(type, JSON.stringify(newLogs));
+  }
+
 
   return {
     save,
     remove,
     get,
-    clearAll
+    clearAll,
+    update
   }
 }

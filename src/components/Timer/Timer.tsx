@@ -138,8 +138,6 @@ export const Timer = () => {
     const hour = Math.floor((time / 3600000) % 60);
     let min = Math.floor((time / 60000) % 60);
 
-    min = min + 60
-
     if (Math.floor((time / 1000) % 60) >= 30) {
       min += 1;
     }

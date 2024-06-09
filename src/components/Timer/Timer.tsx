@@ -19,11 +19,9 @@ import { ModalManualLog } from "../ModalManualLog/ModalManualLog";
 import { workLogsController } from "../../services/SaveDataLocal/workLogsController";
 import { getFormattedDate } from "../../helpers/getFormattedDate";
 import { useConfig } from "../../contexts/ConfigContext";
-import { WorkLog } from "../../types/WorkLogs";
 import { useJira } from "../../contexts/JiraContext";
 
 export const Timer = () => {
-  const [isActive, setIsActive] = useState(false);
   const [isPaused, setIsPaused] = useState(true);
   const [time, setTime] = useState(0);
   const [startDate, setStartDate] = useState<Date>();
@@ -31,14 +29,14 @@ export const Timer = () => {
 
   const [openModalLogs, setOpenModalLogs] = useState(false);
   const [openModalManualLogs, setOpenModalManualLogs] = useState(false);
-  const { timerMode, setTimerMode, task, description, getWorkLog } =
-    useConfig();
-  const { cloudIdSelected, createWorkLog } = useJira();
-
+  const { timerMode, setTimerMode, task, description, getWorkLog, isTimerActive, setIsTimerActive} =
+  useConfig();
+  const { createWorkLog } = useJira();
+  
   useEffect(() => {
     let interval: any = null;
 
-    if (isActive && isPaused === false) {
+    if (isTimerActive && isPaused === false) {
       interval = setInterval(() => {
         setTime((time) => time + 10);
       }, 10);
@@ -48,7 +46,7 @@ export const Timer = () => {
     return () => {
       clearInterval(interval);
     };
-  }, [isActive, isPaused]);
+  }, [isTimerActive, isPaused]);
 
   const clearWorkLog = () => {
     Swal.fire({
@@ -115,10 +113,9 @@ export const Timer = () => {
     if (!validateFields()) return;
 
     if (time === 0) {
-      setIsActive(true);
+      
+      setIsTimerActive(true);
       setIsPaused(false);
-
-      // const fullDate = getFormattedDate(new Date());
 
       setStartDate(new Date());
       setStartHour(getFormattedDate(new Date()).hour);
@@ -129,7 +126,7 @@ export const Timer = () => {
   };
 
   const handleReset = () => {
-    setIsActive(false);
+    setIsTimerActive(false);
     setTime(0);
   };
 
@@ -140,6 +137,8 @@ export const Timer = () => {
 
     const hour = Math.floor((time / 3600000) % 60);
     let min = Math.floor((time / 60000) % 60);
+
+    min = min + 60
 
     if (Math.floor((time / 1000) % 60) >= 30) {
       min += 1;
@@ -168,10 +167,25 @@ export const Timer = () => {
 
     const completTime = `${hour}h ${min}m`;
 
-    const result = await Swal.fire({
+    const regex = new RegExp(/^([A-Z]+-\d+)/);
+    const regexResult = regex.exec(task?.value ?? '')
+
+
+    if(!regexResult?.length) {
+      Swal.fire({
+        title: "Invalid Task ID",
+        icon: "error"
+      })
+  
+      return
+    }
+    
+    const taskFormatted = regexResult[0]
+
+    Swal.fire({
       title: "Save Worklog",
       html: `Time: <b>"${completTime}"</b><br> 
-             Task: <b>"${task?.value}"</b><br> 
+             Task: <b>"${taskFormatted}"</b><br> 
              Description: <b>"${description?.value}"</b>`,
       showCancelButton: true,
       showLoaderOnConfirm: true,
@@ -180,60 +194,22 @@ export const Timer = () => {
       confirmButtonText: "Save",
       allowOutsideClick: () => !Swal.isLoading(),
       preConfirm: async () => {
-        let result = true
-        const workLog = workLogsController();
-  
-        let newItem = {
-          id: Date.now().toString(),
-          startDate: startDate?.toISOString() || "",
-          startDateFormatted: StartHour,
-          description: description?.value || "",
-          task: task?.value || "",
-          time: completTime
-        } as WorkLog;
-  
-        try {
-          if (cloudIdSelected.current) {
-            await createWorkLog({
-              description: newItem.description,
-              started: newItem.startDate.replaceAll("Z", "+0000"),
-              task: newItem.task,
-              time: newItem.time,
-              cloudId: cloudIdSelected.current,
-            });
-  
-            newItem.integration = {
-              registered: true,
-              msg: "Successfully registered",
-            };
-          }
-        } catch (err: any) {
-          let msg = err?.response?.data?.message
-          msg = msg ?? err?.response?.data?.errorMessages?.join(" - ")
-          msg = msg ?? 'Error'
-  
-          Swal.fire({
-            title: "Error in integration with Jira",
-            text: msg,
-            icon: "error",
-          }).then(() => {
+        const result = await createWorkLog({
+          workLog: {
+            id: Date.now().toString(),
+            startDate: startDate?.toISOString() || "",
+            startDateFormatted: StartHour,
+            description: description?.value || "",
+            task: taskFormatted,
+            time: completTime
+          },
+          callbackIntegrationError: () => {
             getWorkLog();
             handleReset();
-          });
-  
-          newItem.integration = {
-            registered: false,
-            msg,
-          };
-
-          result = false
-        }
-  
-        workLog.save({
-          newItem
+          }
         });
-
-        return result
+        
+        return result.integratedWorkLog
       }
     }).then(async (result) => {
       if (result.isConfirmed) {
@@ -268,12 +244,12 @@ export const Timer = () => {
           className="button--circle-primary"
           id="button-stop"
           href="#"
-          title={isActive && !isPaused ? "Stop" : "Start"}
+          title={isTimerActive && !isPaused ? "Stop" : "Start"}
           onClick={() => {
             handleStarPauseResume();
           }}
         >
-          {isActive && !isPaused ? (
+          {isTimerActive && !isPaused ? (
             <BsFillPauseCircleFill className="color-secundary" />
           ) : (
             <BsFillPlayCircleFill className="color-primary" />

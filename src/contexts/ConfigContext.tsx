@@ -21,19 +21,22 @@ interface ConfigValue {
   setLogs: (logs: WorkLogs) => any;
   setTask: (task: Option | null) => any;
   setDescription: (description: Option | null) => any;
-  optionsTask: Array<any>;
-  optionsDescription: Array<any>;
+  optionsTask: Array<Option>;
+  optionsDescription: Array<Option>;
   getData: () => void;
   addData: (type: FormData, newItem: Option) => void;
   getWorkLog: () => void;
   workedHours: string;
   pointedHours: string;
+  isTimerActive: boolean;
+  setIsTimerActive: (isTimeActive: boolean) => any;
 }
 
 const ConfigContext = createContext<ConfigValue | null>(null);
 
 const ConfigProvider = ({ children }: any) => {
   const [timerMode, setTimerMode] = useState<TimerMode>("window");
+  const [isTimerActive, setIsTimerActive] = useState(false);
   const [task, setTask] = useState<Option | null>();
   const [logs, setLogs] = useState<WorkLogs>([]);
   const [description, setDescription] = useState<Option | null>();
@@ -41,6 +44,7 @@ const ConfigProvider = ({ children }: any) => {
   const [optionsDescription, setOptionsDescription] = useState([]);
   const [workedHours, setWorkedHours] = useState("");
   const [pointedHours, setPointedHours] = useState("");
+
 
   const getData = async () => {
     const defaultTasks = formDataController("task").get();
@@ -96,6 +100,8 @@ const ConfigProvider = ({ children }: any) => {
         getWorkLog,
         workedHours,
         pointedHours,
+        isTimerActive,
+        setIsTimerActive,
       }}
     >
       {children}

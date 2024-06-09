@@ -8,10 +8,18 @@ import type {
 } from "axios";
 import axios from "axios";
 import { getNewToken } from "../services/Jira/getNewToken";
-import React, { createContext, useContext, useEffect, useRef, useState } from "react";
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { useLocalStorage } from "@uidotdev/usehooks";
 import { SessionJiraDataType, UserLogged } from "../types/Jira";
-import { CreateWorkLog } from "../types/WorkLogs";
+import { CreateWorkLog, WorkLog } from "../types/WorkLogs";
+import { workLogsController } from "../services/SaveDataLocal/workLogsController";
+import Swal from "sweetalert2";
 
 export interface PersistConfig extends AxiosRequestConfig {
   retry?: number;
@@ -37,7 +45,7 @@ export interface ExtendedProfile {
   location: string;
 }
 
-type CreateWorkLogParams = {
+type RegisterWorkLogInJiraProps = {
   task: string;
   description: string;
   time: string;
@@ -45,14 +53,24 @@ type CreateWorkLogParams = {
   cloudId: string;
 };
 
+type CreateWorkLogProps = {
+  workLog: WorkLog;
+  callbackIntegrationError?: Function;
+};
+
 interface JiraValue {
   sessionJiraData: SessionJiraDataType | null | undefined;
   setSessionJiraData: (sessionJiraData: SessionJiraDataType | null) => any;
   userLogged: UserLogged | null | undefined;
   setUserLogged: (userLogged: UserLogged | null) => any;
-  getProfileData: () => Promise<Profile | null>
-  createWorkLog: (props: CreateWorkLogParams) => Promise<AxiosResponse<CreateWorkLog, any>>
-  cloudIdSelected: React.MutableRefObject<string | null>
+  getProfileData: () => Promise<Profile | null>;
+  createWorkLog: (props: CreateWorkLogProps) => Promise<{
+    integratedWorkLog: boolean;
+  }>;
+  registerWorkLogInJira: (
+    props: RegisterWorkLogInJiraProps
+  ) => Promise<AxiosResponse<CreateWorkLog, any>>;
+  cloudIdSelected: React.MutableRefObject<string | null>;
 }
 
 const JiraContext = createContext<JiraValue | null>(null);
@@ -83,24 +101,23 @@ const JiraProvider = ({ children }: any) => {
         sessionJiraData
       ) {
         config.retry -= 1;
-      
+
         const data = await getNewToken({
           refreshToken: sessionJiraData.refresh_token,
         });
-          
+
         setSessionJiraData({
           ...sessionJiraData,
           accessToken: data.access_token,
           refresh_token: data.refresh_token,
         });
 
-
         return axiosPersist.request({
           ...config,
           headers: {
             ...config.headers,
             Authorization: `Bearer ${data.access_token}`,
-          }
+          },
         });
       }
 
@@ -125,13 +142,13 @@ const JiraProvider = ({ children }: any) => {
     return data;
   };
 
-  const createWorkLog = async ({
+  const registerWorkLogInJira = async ({
     description,
     task,
     time,
     started,
     cloudId,
-  }: CreateWorkLogParams) => {
+  }: RegisterWorkLogInJiraProps) => {
     if (!sessionJiraData) throw new Error("Token not is valid");
     if (!description) throw new Error("Description not informed");
     if (!task) throw new Error("Task not informed");
@@ -167,30 +184,94 @@ const JiraProvider = ({ children }: any) => {
           "Content-Type": "application/json",
         },
         retry: 2,
-      }  as PersistConfig
+      } as PersistConfig
     );
   };
 
+  const createWorkLog = async ({
+    workLog,
+    callbackIntegrationError,
+  }: CreateWorkLogProps) => {
+    let result = true;
+    const controller = workLogsController();
+
+    let newItem = {
+      id: Date.now().toString(),
+      startDate: workLog.startDate,
+      startDateFormatted: workLog.startDateFormatted,
+      description: workLog.description,
+      task: workLog.task,
+      time: workLog.time,
+    } as WorkLog;
+
+    try {
+      if (cloudIdSelected.current) {
+        await registerWorkLogInJira({
+          description: newItem.description,
+          started: newItem.startDate.replaceAll("Z", "+0000"),
+          task: newItem.task,
+          time: newItem.time,
+          cloudId: cloudIdSelected.current,
+        });
+
+        newItem.integration = {
+          registered: true,
+          msg: "Successfully registered",
+        };
+      }
+    } catch (err: any) {
+      let msg = err?.response?.data?.message;
+      msg = msg ?? err?.response?.data?.errorMessages?.join(" - ");
+      msg = msg ?? "Error";
+
+      Swal.fire({
+        title: "Error in integration with Jira",
+        text: msg,
+        icon: "error",
+      }).then(() => {
+        if (callbackIntegrationError) callbackIntegrationError();
+      });
+
+      newItem.integration = {
+        registered: false,
+        msg,
+      };
+
+      result = false;
+    }
+
+    controller.save({
+      newItem,
+    });
+
+    return {
+      integratedWorkLog: result,
+    };
+  };
+
   useEffect(() => {
-    if(sessionJiraData) {
+    if (sessionJiraData) {
       getProfileData()
         .then((data) => {
           setUserLogged({
-            userName: data?.name || '',
-            userPicture: data?.picture || '',
+            userName: data?.name || "",
+            userPicture: data?.picture || "",
           });
         })
         .catch((error) => {
           console.error("TCL: LoginComponent -> error", error);
-        })
+        });
     }
-  },[])
+  }, []);
 
   useEffect(() => {
-    if(sessionJiraData) {
-      cloudIdSelected.current = sessionJiraData.accessibleResources.find(resource => resource.selected)?.id ?? null
+    if (sessionJiraData) {
+      cloudIdSelected.current =
+        sessionJiraData.accessibleResources.find(
+          (resource) => resource.selected
+        )?.id ?? null;
     }
-  }, [sessionJiraData])
+  }, [sessionJiraData]);
 
   return (
     <JiraContext.Provider
@@ -201,7 +282,8 @@ const JiraProvider = ({ children }: any) => {
         setUserLogged,
         getProfileData,
         createWorkLog,
-        cloudIdSelected
+        registerWorkLogInJira,
+        cloudIdSelected,
       }}
     >
       {children}

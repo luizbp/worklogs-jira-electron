@@ -20,6 +20,8 @@ import {
 } from "@mui/material";
 import Swal from "sweetalert2";
 import { useJira } from "../../contexts/JiraContext";
+import { useConfig } from "../../contexts/ConfigContext";
+import { handleLogin } from "../../services/integrationIpcRender";
 
 const windowCustom: any = window;
 const ipcRenderer = windowCustom?.ipcRenderer;
@@ -27,6 +29,7 @@ const ipcRenderer = windowCustom?.ipcRenderer;
 export const LoginComponent = () => {
   const { sessionJiraData, setSessionJiraData, userLogged, setUserLogged } =
     useJira();
+  const { isTimerActive } = useConfig()
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -40,7 +43,22 @@ export const LoginComponent = () => {
     return (
       <IoMdLogIn
         onClick={async () => {
-          await ipcRenderer.invoke("auth:logon", "");
+
+          if(isTimerActive) {
+            const result = await Swal.fire({
+              title: "Attention!",
+              text: "To log in it is necessary to reload the application and the timer will be reset, continue?",
+              showCancelButton: true,
+              confirmButtonColor: "#08979c",
+              cancelButtonColor: "#ff4d4f",
+              icon: "warning",
+              confirmButtonText: "Yes",
+            })
+  
+            if (!result.isConfirmed) return
+          }
+
+          handleLogin()
         }}
         className="button-login"
         title="Login in Jira"

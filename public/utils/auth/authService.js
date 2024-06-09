@@ -16,7 +16,7 @@ function getSessionJiraData() {
 }
 
 function getAuthenticationURL() {
-  const scopes = "write:jira-work read:me offline_access write:issue-worklog:jira write:issue-worklog.property:jira read:avatar:jira read:group:jira read:issue-worklog:jira read:project-role:jira read:user:jira read:issue-worklog.property:jira"
+  const scopes = "write:jira-work read:me offline_access"
   return `https://${auth0Domain}/authorize?audience=api.atlassian.com&state=${randomUUID()}&client_id=${clientId}&scope=${scopes}&response_type=code&redirect_uri=${redirectUri}&prompt=consent`;
 }
 

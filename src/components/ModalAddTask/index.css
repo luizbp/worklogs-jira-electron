@@ -1,0 +1,53 @@
+.modal-add-task .icon-clean {
+  color: var(--color-six);
+}
+
+.modal-add-task .box--modal-buttons {
+  margin-top: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+}
+
+.modal-add-task .button--clear-worklogs, .button--clear-worklogs:hover {
+  font-size: 12px !important;
+  background: var(--color-first) !important;
+  transition: 0.1s;
+}
+
+.modal-add-task .button--cancel-worklogs, .button--cancel-worklogs:hover {
+  font-size: 12px !important;
+  background: var(--color-second) !important;
+  transition: 0.1s;
+}
+
+.modal-add-task .button--cancel-worklogs:hover,
+.modal-add-task .button--clear-worklogs:hover {
+  opacity: 0.8;
+  transition: 0.1;
+}
+
+
+.modal-add-task .box--fields {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.modal-add-task .modal-manual-log .css-1fdsijx-ValueContainer {
+  padding: 10.5px 12px!important;
+}
+
+.modal-add-task .MuiInputBase-input {
+  padding: 14.5px 14px !important;
+}
+
+.modal-add-task .box--time {
+  display: flex;
+  gap: 5px;
+}
+
+.modal-add-task .box--time #hours, .box--time #minutes {
+  width: 100px;
+}

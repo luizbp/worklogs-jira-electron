@@ -28,7 +28,7 @@ export const TableLogs = ({
   deleteWorkLog,
   loading,
 }: TableLogsParams) => {
-  const { createWorkLog, cloudIdSelected } = useJira();
+  const { registerWorkLogInJira, cloudIdSelected } = useJira();
   const { getWorkLog } = useConfig();
 
   const getStartDateFormatted = (startDate: string) => {
@@ -76,7 +76,7 @@ export const TableLogs = ({
               loading: true,
             });
 
-            await createWorkLog({
+            await registerWorkLogInJira({
               description: workLog.description,
               started: workLog.startDate.replaceAll("Z", "+0000"),
               task: workLog.task,

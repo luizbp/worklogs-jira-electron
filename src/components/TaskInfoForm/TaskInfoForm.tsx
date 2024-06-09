@@ -4,14 +4,17 @@ import Swal from "sweetalert2";
 
 import "./index.css";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import Select from "react-select";
 import CreatableSelect from "react-select/creatable";
-import { BsFillXCircleFill } from "react-icons/bs";
+import { BsFillXCircleFill, BsFillPlusCircleFill } from "react-icons/bs";
 import { formDataController } from "../../services/SaveDataLocal/formDataController";
 import type { FormData } from "../../types/FormData";
 import { useConfig } from "../../contexts/ConfigContext";
+import { ModalAddTask } from "../ModalAddTask/ModalAddTask";
 
 export const TaskInfoForm = () => {
+  const [openModalAddTask, setOpenModalAddTask] = useState(false);
   const {
     timerMode,
     task,
@@ -58,31 +61,14 @@ export const TaskInfoForm = () => {
   return (
     <div className="task-info-form">
       <div className="select-task">
-        <label>Task Number</label>
+        <label htmlFor="select-task">Task Number</label>
         <div className="box--select">
-          <CreatableSelect
+          <Select
+            isSearchable
             isClearable
             id="select-task"
             onChange={(task) => {
               setTask(task);
-            }}
-            onCreateOption={(task) => {
-              const regexValidate = new RegExp(/^([A-Za-z]+)-(\d+)$/);
-
-              if (!regexValidate.test(task)) {
-                Swal.fire({
-                  title:
-                    'Incorrect format, it must be in the format "XXX...-000..." e.g. "ODR-3520"',
-                  icon: "error",
-                });
-
-                return;
-              }
-
-              addData("task", {
-                value: task.toUpperCase(),
-                label: task.toUpperCase(),
-              });
             }}
             options={optionsTask}
             value={
@@ -99,10 +85,15 @@ export const TaskInfoForm = () => {
             title="Delete task option"
             onClick={() => clearData("task")}
           />
+          <BsFillPlusCircleFill   
+            className="button--add"
+            title="Delete task option"
+            onClick={() => setOpenModalAddTask(true)}
+          />
         </div>
       </div>
       <div className="select-description">
-        <label>Description</label>
+        <label htmlFor="select-description">Description</label>
         <div className="box--select">
           <CreatableSelect
             isClearable
@@ -126,6 +117,10 @@ export const TaskInfoForm = () => {
           />
         </div>
       </div>
+      <ModalAddTask
+        handleClose={() => setOpenModalAddTask(false)}
+        open={openModalAddTask}
+      />
     </div>
   );
 };

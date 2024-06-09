@@ -3,15 +3,14 @@ import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import CreatableSelect from "react-select/creatable";
+import Select from "react-select";
 
 import "./index.css";
 import TextField from "@mui/material/TextField";
 import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
-import { workLogsController } from "../../services/SaveDataLocal/workLogsController";
 import { getFormattedDate } from "../../helpers/getFormattedDate";
 import { useConfig } from "../../contexts/ConfigContext";
-import { WorkLog } from "../../types/WorkLogs";
 import { useJira } from "../../contexts/JiraContext";
 
 const styleBoxModal = {
@@ -53,7 +52,7 @@ export const ModalManualLog = ({ handleClose, open }: ModalWorkLogsParams) => {
     addData,
     getWorkLog,
   } = useConfig();
-  const { createWorkLog, cloudIdSelected } = useJira();
+  const { createWorkLog } = useJira();
 
   const clearFields = () => {
     setStartDate("");
@@ -67,10 +66,25 @@ export const ModalManualLog = ({ handleClose, open }: ModalWorkLogsParams) => {
 
     if (!description || !task) return;
 
+    const regex = new RegExp(/^([A-Z]+-\d+)/);
+    const regexResult = regex.exec(task.value)
+
+
+    if(!regexResult?.length) {
+      Swal.fire({
+        title: "Invalid Task ID",
+        icon: "error"
+      })
+  
+      return
+    }
+    
+    const taskFormatted = regexResult[0]
+    
     Swal.fire({
       title: "Save Worklog",
       html: `Time: <b>"${hours}h ${minutes}m"</b><br> 
-             Task: <b>"${task.value}"</b><br> 
+             Task: <b>"${taskFormatted}"</b><br> 
              Description: <b>"${description.value}"</b><br>
              Start Date: <b>"${dateFormated}"</b><br> 
              `,
@@ -79,62 +93,25 @@ export const ModalManualLog = ({ handleClose, open }: ModalWorkLogsParams) => {
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#08979c",
       confirmButtonText: "Save",
-      preConfirm: async (login) => {
-        let result = true
-        const workLog = workLogsController();
+      preConfirm: async () => {
 
-        const newItem = {
-          id: Date.now().toString(),
-          startDate: new Date(startDate).toISOString(),
-          startDateFormatted: fullDate.hour,
-          description: description.value,
-          task: task.value,
-          time: `${hours}h ${minutes}m`,
-        } as WorkLog;
-
-        try {
-          if (cloudIdSelected.current) {
-            await createWorkLog({
-              description: newItem.description,
-              started: newItem.startDate.replaceAll("Z", "+0000"),
-              task: newItem.task,
-              time: newItem.time,
-              cloudId: cloudIdSelected.current,
-            });
-
-            newItem.integration = {
-              registered: true,
-              msg: "Successfully registered",
-            };
-          }
-        } catch (err: any) {
-          let msg = err?.response?.data?.message
-          msg = msg ?? err?.response?.data?.errorMessages?.join(" - ")
-          msg = msg ?? 'Error'
-
-          Swal.fire({
-            title: "Error in integration with Jira",
-            text: msg,
-            icon: "error",
-          }).then(() => {
+        const result = await createWorkLog({
+          workLog: {
+            id: Date.now().toString(),
+            startDate: new Date(startDate).toISOString(),
+            startDateFormatted: fullDate.hour,
+            description: description.value,
+            task: taskFormatted,
+            time: `${hours}h ${minutes}m`,
+          },
+          callbackIntegrationError: () => {
             getWorkLog();
             clearFields();
             handleClose();
-          })
-          
-          newItem.integration = {
-            registered: false,
-            msg,
-          };
-          
-          result = false 
-        }
-
-        workLog.save({
-          newItem,
+          }
         });
-
-        return result
+        
+        return result.integratedWorkLog
       },
       allowOutsideClick: () => !Swal.isLoading()
     }).then(async (result) => {
@@ -190,28 +167,10 @@ export const ModalManualLog = ({ handleClose, open }: ModalWorkLogsParams) => {
           </div>
           <div>
             <label htmlFor="task">Task</label>
-            <CreatableSelect
+            <Select
               isClearable
               id="select-task"
               onChange={(task) => setTask(task)}
-              onCreateOption={(task) => {
-                const regexValidate = new RegExp(/^([A-Za-z]+)-(\d+)$/);
-
-                if (!regexValidate.test(task)) {
-                  Swal.fire({
-                    title:
-                      'Incorrect format, it must be in the format "XXX...-000..." e.g. "ODR-3520"',
-                    icon: "error",
-                  });
-
-                  return;
-                }
-
-                addData("task", {
-                  value: task.toUpperCase(),
-                  label: task.toUpperCase(),
-                });
-              }}
               options={optionsTask}
               value={
                 task

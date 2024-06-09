@@ -3,17 +3,18 @@ import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import CreatableSelect from "react-select/creatable";
+import Select from "react-select";
 
 import "./index.css";
 import TextField from "@mui/material/TextField";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
-import { workLogsController } from "../../services/SaveDataLocal/workLogsController";
 import { getFormattedDate } from "../../helpers/getFormattedDate";
 import { useConfig } from "../../contexts/ConfigContext";
+import { useJira } from "../../contexts/JiraContext";
 
 const styleBoxModal = {
-  position: "absolute" as "absolute",
+  position: "absolute",
   top: "50%",
   left: "50%",
   transform: "translate(-50%, -50%)",
@@ -37,17 +38,26 @@ type ModalWorkLogsParams = {
   handleClose: any;
 };
 
-export const ModalManualLog = ({
-  handleClose,
-  open,
-}: ModalWorkLogsParams) => {
+export const ModalManualLog = ({ handleClose, open }: ModalWorkLogsParams) => {
   const [startDate, setStartDate] = useState("");
-  const [time, setTime] = useState("");
-  const { task, setTask, description, setDescription, optionsTask, optionsDescription, addData, getWorkLog } = useConfig();
+  const [hours, setHours] = useState("0");
+  const [minutes, setMinutes] = useState("0");
+  const {
+    task,
+    setTask,
+    description,
+    setDescription,
+    optionsTask,
+    optionsDescription,
+    addData,
+    getWorkLog,
+  } = useConfig();
+  const { createWorkLog } = useJira();
 
   const clearFields = () => {
     setStartDate("");
-    setTime("");
+    setHours("0");
+    setMinutes("0");
   };
 
   const save = () => {
@@ -56,43 +66,75 @@ export const ModalManualLog = ({
 
     if (!description || !task) return;
 
+    const regex = new RegExp(/^([A-Z]+-\d+)/);
+    const regexResult = regex.exec(task.value)
+
+
+    if(!regexResult?.length) {
+      Swal.fire({
+        title: "Invalid Task ID",
+        icon: "error"
+      })
+  
+      return
+    }
+    
+    const taskFormatted = regexResult[0]
+    
     Swal.fire({
       title: "Save Worklog",
-      html: `Time: <b>"${time}"</b><br> 
-             Task: <b>"${task.value}"</b><br> 
+      html: `Time: <b>"${hours}h ${minutes}m"</b><br> 
+             Task: <b>"${taskFormatted}"</b><br> 
              Description: <b>"${description.value}"</b><br>
              Start Date: <b>"${dateFormated}"</b><br> 
              `,
       showCancelButton: true,
+      showLoaderOnConfirm: true,
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#08979c",
       confirmButtonText: "Save",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        const workLog = workLogsController();
+      preConfirm: async () => {
 
-        workLog.save({
-          newItem: {
+        const result = await createWorkLog({
+          workLog: {
             id: Date.now().toString(),
             startDate: new Date(startDate).toISOString(),
             startDateFormatted: fullDate.hour,
             description: description.value,
-            task: task.value,
-            time,
+            task: taskFormatted,
+            time: `${hours}h ${minutes}m`,
           },
+          callbackIntegrationError: () => {
+            getWorkLog();
+            clearFields();
+            handleClose();
+          }
         });
-
-        getWorkLog();
-
+        
+        return result.integratedWorkLog
+      },
+      allowOutsideClick: () => !Swal.isLoading()
+    }).then(async (result) => {
+      if (result.isConfirmed) {
         Swal.fire({
           title: "Saved successfully!",
           icon: "success",
         });
+
+        getWorkLog();
         clearFields();
         handleClose();
       }
-    });
+    })
   };
+
+  useEffect(() => {
+    const data = new Date();
+    let currentData = new Date(
+      data.valueOf() - data.getTimezoneOffset() * 60000
+    );
+    setStartDate(`${currentData.toISOString().replace(/:\d+\.\d+Z$/, "")}`);
+  }, [open]);
 
   return (
     <Modal
@@ -125,18 +167,10 @@ export const ModalManualLog = ({
           </div>
           <div>
             <label htmlFor="task">Task</label>
-            <CreatableSelect
+            <Select
               isClearable
               id="select-task"
-              onChange={(task) => {
-                setTask(task);
-              }}
-              onCreateOption={(task) =>
-                addData("task", {
-                  value: task.toUpperCase(),
-                  label: task.toUpperCase(),
-                })
-              }
+              onChange={(task) => setTask(task)}
               options={optionsTask}
               value={
                 task
@@ -168,13 +202,22 @@ export const ModalManualLog = ({
           </div>
           <div>
             <label htmlFor="time">Time</label>
-            <TextField
-              value={time}
-              onChange={({ target: { value } }: any) => setTime(value)}
-              fullWidth
-              id="time"
-              placeholder="Ex: 1h 10m"
-            />
+            <div className="box--time">
+              <TextField
+                value={hours}
+                onChange={({ target: { value } }: any) => setHours(value)}
+                id="hours"
+                type="number"
+              />
+              <p>h</p>
+              <TextField
+                value={minutes}
+                onChange={({ target: { value } }: any) => setMinutes(value)}
+                id="minutes"
+                type="number"
+              />
+              <p>m</p>
+            </div>
           </div>
         </div>
         <Box className="box--modal-buttons">

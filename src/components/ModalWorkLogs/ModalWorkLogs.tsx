@@ -43,7 +43,6 @@ export const ModalWorkLogs = ({
 }: ModalWorkLogsParams) => {
 
   const { logs } = useConfig();
-
   return (
     <Modal
       sx={styleModal}

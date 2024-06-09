@@ -9,3 +9,51 @@
   transition: 200ms;
   opacity: 0.7;
 }
+
+.cell-actions-box--button--clear {
+  color: var(--color-second);
+  transition: 0.1s;
+  width: 20px;
+  height: 20px;
+}
+
+.cell-actions-box--button--clear:hover {
+  cursor: pointer;
+  opacity: 0.8;
+  transition: 0.1s;
+}
+
+.cell-actions-box--button--upload {
+  color: var(--color-first);
+  transition: 0.1s;
+  width: 20px;
+  height: 20px;
+}
+
+.cell-actions-box--button--upload:hover {
+  cursor: pointer;
+  opacity: 0.8;
+  transition: 0.1s;
+}
+
+
+.cell-actions-box{
+  display: flex !important;
+  flex-direction: row;
+  gap: 5px;
+  align-items: center;
+  justify-content: center;
+}
+
+.cell-integration-box {
+  display: flex !important;
+  flex-direction: row;
+  gap: 5px;
+  align-items: center;
+  justify-content: center;
+}
+
+.loading-integration {
+  width: 20px !important;
+  height: 20px !important;
+}

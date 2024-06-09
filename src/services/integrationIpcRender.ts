@@ -16,3 +16,12 @@ export const setInitialTimerMode = ({callBack}:SetInitialTimerModeParams) => {
   if(callBack) callBack()
   ipcRenderer.invoke('set-initial-timer-mode', '')
 }
+
+type HandleLoginProps = {
+  callBack?: Function
+}
+
+export const handleLogin = (props?:HandleLoginProps) => {
+  if(props?.callBack) props.callBack()
+  ipcRenderer.invoke("auth:logon", "");
+}

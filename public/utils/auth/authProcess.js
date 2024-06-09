@@ -1,5 +1,6 @@
 const { BrowserWindow } = require('electron');
 const authService = require('./authService');
+const isDev = require("electron-is-dev");
 
 let win = null;
 
@@ -16,6 +17,8 @@ async function createAuthWindow(winMain) {
     maximizable: false,
     minimizable: false,
   });
+
+  win.setMenuBarVisibility(isDev);
 
   const urlLoad = authService.getAuthenticationURL()
 

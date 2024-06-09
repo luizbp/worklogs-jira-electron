@@ -14,10 +14,25 @@ Antes de começar, verifique se você atendeu aos seguintes requisitos:
 
 Baixe a versão desejada do aplicativo:
 ### Windows
-- [Worklogs Jira Setup 0.7.0](https://github.com/luizbp/clockwork-jira-electron/releases/download/v0.7.0/Worklogs.Jira.Setup.0.7.0.rar) `Latest`
+- [Worklogs Jira Setup 0.8.0](https://github.com/luizbp/clockwork-jira-electron/releases/download/v0.8.0/Worklogs.Jira.Setup.0.8.0.rar) `Latest`
 - [Outras versões](https://github.com/luizbp/clockwork-jira-electron/releases)
 
 Depois basta descompatar o arquivo `.rar` e executar o arquivo `Worklogs Jira Setup x.x.x.exe`
+
+### Integração com o Jira - *A partir da versão 0.8.0*
+
+Para realizar o login no Jira afim de que seus lançamentos sejam integrados automaticamente no Jira, basta realizar o login:
+
+<img src="./assets/LoginInJira.gif" alt="Login in Jira"><br>
+
+Agora toda vez que for finalizado um registro de worklog tanto com o timer quanto o manual, o lançamento será integrado automaticamente:
+
+<img src="./assets/registerNewWorkLog.gif" alt="Register new worklog"><br>
+
+Caso a requisição de algum erro, que pode ocorrer por instabilidade no serviço do Jira ou algo do tipo, você tem a possibilidade de tentar sincronizar o lançamento novamente:
+
+<img src="./assets/registerError.gif" alt="Register new worklog"><br>
+
 ## 📫 Contribuindo para Worklogs Jira
 Para contribuir com o projeto, siga estas etapas:
 

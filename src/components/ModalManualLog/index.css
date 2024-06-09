@@ -42,3 +42,12 @@
 .MuiInputBase-input {
   padding: 14.5px 14px !important;
 }
+
+.box--time {
+  display: flex;
+  gap: 5px;
+}
+
+.box--time #hours, .box--time #minutes {
+  width: 100px;
+}

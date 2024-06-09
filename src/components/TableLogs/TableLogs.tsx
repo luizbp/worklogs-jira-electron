@@ -7,33 +7,123 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-import { IntegrationData, WorkLogs } from "../../types/WorkLogs";
+import { IntegrationData, WorkLog, WorkLogs } from "../../types/WorkLogs";
 import { BsFillTrashFill } from "react-icons/bs";
+import { IoReloadCircle } from "react-icons/io5";
 import { getFormattedDate } from "../../helpers/getFormattedDate";
-import { Chip } from "@mui/material";
+import { Box, Chip, CircularProgress } from "@mui/material";
+import Swal from "sweetalert2";
+import { useJira } from "../../contexts/JiraContext";
+import { workLogsController } from "../../services/SaveDataLocal/workLogsController";
+import { useConfig } from "../../contexts/ConfigContext";
 
 type TableLogsParams = {
   logs: WorkLogs | [];
   deleteWorkLog: any;
+  loading?: boolean;
 };
 
-export const TableLogs = ({ logs, deleteWorkLog }: TableLogsParams) => {
+export const TableLogs = ({
+  logs,
+  deleteWorkLog,
+  loading,
+}: TableLogsParams) => {
+  const { createWorkLog, cloudIdSelected } = useJira();
+  const { getWorkLog } = useConfig();
 
   const getStartDateFormatted = (startDate: string) => {
     const fullDate = getFormattedDate(new Date(startDate));
     return <>{`${fullDate.date} - ${fullDate.hour}`}</>;
-  }
+  };
 
   const getInfoIntegration = (data?: IntegrationData) => {
-    if(!data) return <Chip label="Not Registred" size="small" title={'Old version'}/>
+    if (data?.loading === true)
+      return <CircularProgress className="loading-integration" />;
 
-    if(data.registered) {
-      return <Chip label="Registred" size="small" color="success" title={data?.msg ?? ''}/>
+    if (!data)
+      return <Chip label="Not Registred" size="small" title={"Old version"} />;
+
+    if (data.registered) {
+      return (
+        <Chip
+          label="Registred"
+          size="small"
+          color="success"
+          title={data?.msg ?? ""}
+        />
+      );
     }
 
-    return <Chip label="Error" size="small" color="error" title={data?.msg ?? ''}/>
-  }
-  
+    return (
+      <Chip label="Error" size="small" color="error" title={data?.msg ?? ""} />
+    );
+  };
+
+  const registerWorkLogOnJira = (workLog: WorkLog) => {
+    Swal.fire({
+      title: "Register on Jira?",
+      showCancelButton: true,
+      showLoaderOnConfirm: true,
+      confirmButtonColor: "#08979c",
+      cancelButtonColor: "#ff4d4f",
+      confirmButtonText: "Yes",
+      allowOutsideClick: () => !Swal.isLoading(),
+      preConfirm: async () => {
+        try {
+          if (cloudIdSelected.current) {
+            workLogsController().update(workLog.id, "integration", {
+              registered: false,
+              loading: true,
+            });
+
+            await createWorkLog({
+              description: workLog.description,
+              started: workLog.startDate.replaceAll("Z", "+0000"),
+              task: workLog.task,
+              time: workLog.time,
+              cloudId: cloudIdSelected.current,
+            });
+
+            workLogsController().update(workLog.id, "integration", {
+              registered: true,
+              msg: "Successfully registered",
+              loading: false,
+            });
+          }
+        } catch (err: any) {
+          let msg = err?.response?.data?.message;
+          msg = msg ?? err?.response?.data?.errorMessages?.join(" - ");
+          msg = msg ?? "Error";
+
+          Swal.fire({
+            title: "Error in integration with Jira",
+            text: msg,
+            icon: "error",
+          }).then(() => {
+            getWorkLog();
+          });
+
+          workLogsController().update(workLog.id, "integration", {
+            registered: false,
+            msg,
+            loading: false,
+          });
+
+          return false;
+        }
+      },
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        Swal.fire({
+          title: "Successfully registered!",
+          icon: "success",
+        });
+
+        getWorkLog();
+      }
+    });
+  };
+
   return (
     <TableContainer sx={{ maxHeight: "350px" }} component={Paper}>
       <Table aria-label="simple table">
@@ -65,7 +155,7 @@ export const TableLogs = ({ logs, deleteWorkLog }: TableLogsParams) => {
                 </p>
               </TableCell>
               <TableCell>
-              <p
+                <p
                   className="action-click-clipboard"
                   title="Copy to jira"
                   onClick={() => {
@@ -87,7 +177,7 @@ export const TableLogs = ({ logs, deleteWorkLog }: TableLogsParams) => {
                 </p>
               </TableCell>
               <TableCell>
-              <p
+                <p
                   className="action-click-clipboard"
                   title="Copy to jira"
                   onClick={() => {
@@ -98,14 +188,29 @@ export const TableLogs = ({ logs, deleteWorkLog }: TableLogsParams) => {
                 </p>
               </TableCell>
               <TableCell>
-              {getInfoIntegration(row.integration)}
+                <Box className="cell-integration-box">
+                  {getInfoIntegration(row.integration)}
+                </Box>
               </TableCell>
               <TableCell>
-                <BsFillTrashFill
-                  className="button--clear"
-                  title="Delete"
-                  onClick={() => deleteWorkLog(row.id)}
-                />
+                <Box className="cell-actions-box">
+                  {!row?.integration?.loading && (
+                    <BsFillTrashFill
+                      className="cell-actions-box--button--clear"
+                      title="Delete"
+                      onClick={() => deleteWorkLog(row.id)}
+                    />
+                  )}
+
+                  {row.integration?.registered !== true &&
+                    !row?.integration?.loading && (
+                      <IoReloadCircle
+                        className="cell-actions-box--button--upload"
+                        title="Retry integration on Jira"
+                        onClick={() => registerWorkLogOnJira(row)}
+                      />
+                    )}
+                </Box>
               </TableCell>
             </TableRow>
           ))}

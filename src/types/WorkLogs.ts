@@ -10,9 +10,12 @@ export type WorkLog = {
   integration?: IntegrationData
 }
 
+export type WorkLogFields = 'id' | 'startDate' | 'startDateFormatted' | 'task' | 'description' | 'time' | 'integration'
+
 export type IntegrationData = {
   registered: boolean
   msg?: string
+  loading?: boolean
 }
 
 export interface CreateWorkLog {

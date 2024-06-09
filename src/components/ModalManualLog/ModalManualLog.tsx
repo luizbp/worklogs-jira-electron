@@ -6,7 +6,7 @@ import CreatableSelect from "react-select/creatable";
 
 import "./index.css";
 import TextField from "@mui/material/TextField";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import { workLogsController } from "../../services/SaveDataLocal/workLogsController";
 import { getFormattedDate } from "../../helpers/getFormattedDate";
@@ -41,7 +41,8 @@ type ModalWorkLogsParams = {
 
 export const ModalManualLog = ({ handleClose, open }: ModalWorkLogsParams) => {
   const [startDate, setStartDate] = useState("");
-  const [time, setTime] = useState("");
+  const [hours, setHours] = useState("0");
+  const [minutes, setMinutes] = useState("0");
   const {
     task,
     setTask,
@@ -56,7 +57,8 @@ export const ModalManualLog = ({ handleClose, open }: ModalWorkLogsParams) => {
 
   const clearFields = () => {
     setStartDate("");
-    setTime("");
+    setHours("0");
+    setMinutes("0");
   };
 
   const save = () => {
@@ -67,17 +69,18 @@ export const ModalManualLog = ({ handleClose, open }: ModalWorkLogsParams) => {
 
     Swal.fire({
       title: "Save Worklog",
-      html: `Time: <b>"${time}"</b><br> 
+      html: `Time: <b>"${hours}h ${minutes}m"</b><br> 
              Task: <b>"${task.value}"</b><br> 
              Description: <b>"${description.value}"</b><br>
              Start Date: <b>"${dateFormated}"</b><br> 
              `,
       showCancelButton: true,
+      showLoaderOnConfirm: true,
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#08979c",
       confirmButtonText: "Save",
-    }).then(async (result) => {
-      if (result.isConfirmed) {
+      preConfirm: async (login) => {
+        let result = true
         const workLog = workLogsController();
 
         const newItem = {
@@ -86,7 +89,7 @@ export const ModalManualLog = ({ handleClose, open }: ModalWorkLogsParams) => {
           startDateFormatted: fullDate.hour,
           description: description.value,
           task: task.value,
-          time,
+          time: `${hours}h ${minutes}m`,
         } as WorkLog;
 
         try {
@@ -105,27 +108,56 @@ export const ModalManualLog = ({ handleClose, open }: ModalWorkLogsParams) => {
             };
           }
         } catch (err: any) {
+          let msg = err?.response?.data?.message
+          msg = msg ?? err?.response?.data?.errorMessages?.join(" - ")
+          msg = msg ?? 'Error'
+
+          Swal.fire({
+            title: "Error in integration with Jira",
+            text: msg,
+            icon: "error",
+          }).then(() => {
+            getWorkLog();
+            clearFields();
+            handleClose();
+          })
+          
           newItem.integration = {
             registered: false,
-            msg: err?.response?.data?.message ?? "Error",
+            msg,
           };
+          
+          result = false 
         }
 
         workLog.save({
           newItem,
         });
 
-        getWorkLog();
-
+        return result
+      },
+      allowOutsideClick: () => !Swal.isLoading()
+    }).then(async (result) => {
+      if (result.isConfirmed) {
         Swal.fire({
           title: "Saved successfully!",
           icon: "success",
         });
+
+        getWorkLog();
         clearFields();
         handleClose();
       }
-    });
+    })
   };
+
+  useEffect(() => {
+    const data = new Date();
+    let currentData = new Date(
+      data.valueOf() - data.getTimezoneOffset() * 60000
+    );
+    setStartDate(`${currentData.toISOString().replace(/:\d+\.\d+Z$/, "")}`);
+  }, [open]);
 
   return (
     <Modal
@@ -161,15 +193,25 @@ export const ModalManualLog = ({ handleClose, open }: ModalWorkLogsParams) => {
             <CreatableSelect
               isClearable
               id="select-task"
-              onChange={(task) => {
-                setTask(task);
-              }}
-              onCreateOption={(task) =>
+              onChange={(task) => setTask(task)}
+              onCreateOption={(task) => {
+                const regexValidate = new RegExp(/^([A-Za-z]+)-(\d+)$/);
+
+                if (!regexValidate.test(task)) {
+                  Swal.fire({
+                    title:
+                      'Incorrect format, it must be in the format "XXX...-000..." e.g. "ODR-3520"',
+                    icon: "error",
+                  });
+
+                  return;
+                }
+
                 addData("task", {
                   value: task.toUpperCase(),
                   label: task.toUpperCase(),
-                })
-              }
+                });
+              }}
               options={optionsTask}
               value={
                 task
@@ -201,13 +243,22 @@ export const ModalManualLog = ({ handleClose, open }: ModalWorkLogsParams) => {
           </div>
           <div>
             <label htmlFor="time">Time</label>
-            <TextField
-              value={time}
-              onChange={({ target: { value } }: any) => setTime(value)}
-              fullWidth
-              id="time"
-              placeholder="Ex: 1h 10m"
-            />
+            <div className="box--time">
+              <TextField
+                value={hours}
+                onChange={({ target: { value } }: any) => setHours(value)}
+                id="hours"
+                type="number"
+              />
+              <p>h</p>
+              <TextField
+                value={minutes}
+                onChange={({ target: { value } }: any) => setMinutes(value)}
+                id="minutes"
+                type="number"
+              />
+              <p>m</p>
+            </div>
           </div>
         </div>
         <Box className="box--modal-buttons">

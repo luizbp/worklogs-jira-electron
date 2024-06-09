@@ -66,12 +66,24 @@ export const TaskInfoForm = () => {
             onChange={(task) => {
               setTask(task);
             }}
-            onCreateOption={(task) =>
+            onCreateOption={(task) => {
+              const regexValidate = new RegExp(/^([A-Za-z]+)-(\d+)$/);
+
+              if (!regexValidate.test(task)) {
+                Swal.fire({
+                  title:
+                    'Incorrect format, it must be in the format "XXX...-000..." e.g. "ODR-3520"',
+                  icon: "error",
+                });
+
+                return;
+              }
+
               addData("task", {
                 value: task.toUpperCase(),
                 label: task.toUpperCase(),
-              })
-            }
+              });
+            }}
             options={optionsTask}
             value={
               task

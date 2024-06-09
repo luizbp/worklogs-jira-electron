@@ -36,7 +36,7 @@ async function createAuthWindow(winMain) {
         winMain.reload();
         return destroyAuthWin();
     } catch (error) {
-        console.log("TCL: createAuthWindow -> error", error)
+        console.error("TCL: createAuthWindow -> error", error)
     }
   });
 

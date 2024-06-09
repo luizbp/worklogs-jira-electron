@@ -174,56 +174,76 @@ export const Timer = () => {
              Task: <b>"${task?.value}"</b><br> 
              Description: <b>"${description?.value}"</b>`,
       showCancelButton: true,
+      showLoaderOnConfirm: true,
       confirmButtonColor: "#08979c",
       cancelButtonColor: "#ff4d4f",
       confirmButtonText: "Save",
-    });
-
-    if (result.isConfirmed) {
-      const workLog = workLogsController();
-
-      let newItem = {
-        id: Date.now().toString(),
-        startDate: startDate?.toISOString() || "",
-        startDateFormatted: StartHour,
-        description: description?.value || "",
-        task: task?.value || "",
-        time: completTime
-      } as WorkLog;
-
-      try {
-        if (cloudIdSelected.current) {
-          await createWorkLog({
-            description: newItem.description,
-            started: newItem.startDate.replaceAll("Z", "+0000"),
-            task: newItem.task,
-            time: newItem.time,
-            cloudId: cloudIdSelected.current,
+      allowOutsideClick: () => !Swal.isLoading(),
+      preConfirm: async () => {
+        let result = true
+        const workLog = workLogsController();
+  
+        let newItem = {
+          id: Date.now().toString(),
+          startDate: startDate?.toISOString() || "",
+          startDateFormatted: StartHour,
+          description: description?.value || "",
+          task: task?.value || "",
+          time: completTime
+        } as WorkLog;
+  
+        try {
+          if (cloudIdSelected.current) {
+            await createWorkLog({
+              description: newItem.description,
+              started: newItem.startDate.replaceAll("Z", "+0000"),
+              task: newItem.task,
+              time: newItem.time,
+              cloudId: cloudIdSelected.current,
+            });
+  
+            newItem.integration = {
+              registered: true,
+              msg: "Successfully registered",
+            };
+          }
+        } catch (err: any) {
+          let msg = err?.response?.data?.message
+          msg = msg ?? err?.response?.data?.errorMessages?.join(" - ")
+          msg = msg ?? 'Error'
+  
+          Swal.fire({
+            title: "Error in integration with Jira",
+            text: msg,
+            icon: "error",
+          }).then(() => {
+            getWorkLog();
+            handleReset();
           });
-
+  
           newItem.integration = {
-            registered: true,
-            msg: "Successfully registered",
+            registered: false,
+            msg,
           };
+
+          result = false
         }
-      } catch (err: any) {
-        newItem.integration = {
-          registered: false,
-          msg: err?.response?.data?.message ?? "Error",
-        };
+  
+        workLog.save({
+          newItem
+        });
+
+        return result
       }
-
-      workLog.save({
-        newItem
-      });
-
-      getWorkLog();
-
-      Swal.fire({
-        icon: "success",
-      });
-      handleReset();
-    }
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        Swal.fire({
+          icon: "success",
+        });
+        getWorkLog();
+        handleReset();
+      }
+    })
   };
 
   return (

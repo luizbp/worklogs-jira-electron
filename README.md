@@ -6,7 +6,7 @@ Worklogs Jira
 
 Apoie o nosso projeto! Sua contribuição ajuda a melhorar continuamente o nosso app e a torná-lo ainda mais incrível. Clique no botão abaixo para fazer uma doação.
 <p align="center">
-  <a href="https://www.paypal.com/donate/?hosted_button_id=JWVWZLQ7E8XMN" target="_blank">
+  <a href="https://rebrand.ly/k1gns78" target="_blank">
     <img width="150" src="https://github.com/luizbp/clockwork-jira-electron/assets/54871916/9a14819d-f1db-4ea8-9555-2913df5210ee">
   </a>
 </p>

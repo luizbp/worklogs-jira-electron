@@ -205,7 +205,7 @@ const JiraProvider = ({ children }: any) => {
     } as WorkLog;
 
     try {
-      if (cloudIdSelected.current) {
+      if (cloudIdSelected.current && userLogged) {
         await registerWorkLogInJira({
           description: newItem.description,
           started: newItem.startDate.replaceAll("Z", "+0000"),

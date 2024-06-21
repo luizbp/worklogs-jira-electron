@@ -57,3 +57,9 @@
   width: 20px !important;
   height: 20px !important;
 }
+
+.cell--task-number-box {
+  display: flex!important;
+  align-items: center;
+  gap: 5px;
+}

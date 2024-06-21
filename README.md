@@ -22,7 +22,7 @@ Antes de começar, verifique se você atendeu aos seguintes requisitos:
 
 Baixe a versão desejada do aplicativo:
 ### Windows
-- [Worklogs Jira Setup 0.8.1](https://rebrand.ly/wt436d0) `Latest`
+- [Worklogs Jira Setup 0.8.1](https://rebrand.ly/1oqirhj) `Latest`
 - [Outras versões](https://github.com/luizbp/worklogs-jira-electron/releases)
 
 Depois basta descompatar o arquivo `.rar` e executar o arquivo `Worklogs Jira Setup x.x.x.exe`

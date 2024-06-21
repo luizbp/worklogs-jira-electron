@@ -30,7 +30,7 @@ export const TaskInfoForm = () => {
   const clearData = (type: FormData) => {
     Swal.fire({
       title: "Attention",
-      text: `Delete ${type} option?`,
+      text: `Delete ${type} "${type === "task" ? task?.label : description?.value}"?`,
       showCancelButton: true,
       confirmButtonColor: "#08979c",
       cancelButtonColor: "#ff4d4f",
@@ -82,12 +82,12 @@ export const TaskInfoForm = () => {
           />
           <BsFillXCircleFill
             className="button--clear"
-            title="Delete task option"
+            title="Delete task selected"
             onClick={() => clearData("task")}
           />
           <BsFillPlusCircleFill   
             className="button--add"
-            title="Delete task option"
+            title="Add new task"
             onClick={() => setOpenModalAddTask(true)}
           />
         </div>

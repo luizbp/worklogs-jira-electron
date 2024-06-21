@@ -22,18 +22,38 @@ Antes de começar, verifique se você atendeu aos seguintes requisitos:
 
 Baixe a versão desejada do aplicativo:
 ### Windows
-- [Worklogs Jira Setup 0.8.0](https://rebrand.ly/r21nsmb) `Latest`
-- [Outras versões](https://github.com/luizbp/clockwork-jira-electron/releases)
+- [Worklogs Jira Setup 0.8.1](https://rebrand.ly/wt436d0) `Latest`
+- [Outras versões](https://github.com/luizbp/worklogs-jira-electron/releases)
 
 Depois basta descompatar o arquivo `.rar` e executar o arquivo `Worklogs Jira Setup x.x.x.exe`
 
-### Integração com o Jira - *A partir da versão 0.8.0*
+## 🎬 Como utilizar
+
+### Cadastrar tarefas
+
+Copie o ID da tarefa que você trabalhando no padrão "XXX...-000..." (ex. ABC-123) e adicione no campo `Task number` dessa forma:
+
+<img src="./assets/registerTask.gif" alt="Register Task"><br>
+
+### Cadastrar descrição
+
+O cadastro de descrição é referente as descrições que ficam no registro de trabalho do Jira. Para cadastrar basta escrever o texto desejado e pressionar "Enter" dessa forma:
+
+<img src="./assets/registerDescription.gif" alt="Register Description"><br>
+
+### Apontamento pelo timer e manual
+
+Há duas possibilidades de lançar tempo gasto, sendo um pelo timer, onde disparamos o timer e quando clicamos em finalizar o apontamento é efetuado conforme o tempo percorrido e de forma manual;
+
+<img src="./assets/registerTime.gif" alt="Register Time"><br>
+
+### Logar com o Jira e lançar apontamentos automaticamente com o Jira. - *A partir da versão 0.8.0*
 
 Para realizar o login no Jira afim de que seus lançamentos sejam integrados automaticamente no Jira, basta realizar o login:
 
 <img src="./assets/LoginInJira.gif" alt="Login in Jira"><br>
 
-Agora toda vez que for finalizado um registro de worklog tanto com o timer quanto o manual, o lançamento será integrado automaticamente:
+Toda vez que for finalizado um registro de worklog tanto com o timer quanto o manual, o lançamento será integrado automaticamente:
 
 <img src="./assets/registerNewWorkLog.gif" alt="Register new worklog"><br>
 
@@ -41,16 +61,6 @@ Caso a requisição de algum erro, que pode ocorrer por instabilidade no serviç
 
 <img src="./assets/registerError.gif" alt="Register new worklog"><br>
 
-## 📫 Contribuindo para Worklogs Jira
-Para contribuir com o projeto, siga estas etapas:
-
-1. Bifurque este repositório.
-2. Crie um branch: `git checkout -b <nome_branch>`.
-3. Faça suas alterações e confirme-as: `git commit -m '<mensagem_commit>'`
-4. Envie para o branch original: `git push origin <nome_do_projeto> / <local>`
-5. Crie a solicitação de pull.
-
-Como alternativa, consulte a documentação do GitHub em [como criar uma solicitação pull](https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/creating-a-pull-request).
 
 ## 🤝 Colaboradores
 
@@ -59,8 +69,8 @@ Agradecemos às seguintes pessoas que contribuíram para este projeto:
 <table>
   <tr>
     <td align="center">
-      <a href="https://github.com/luizbpacct" target="_blank" title="Luiz Carlos B Pereira">
-        <img src="https://avatars.githubusercontent.com/u/115479427" width="50px;" style="border-radius: 100%;" alt="Luiz Carlos B Pereira"/><br>
+      <a href="https://github.com/luizbp" target="_blank" title="Luiz Carlos B Pereira">
+        <img src="https://avatars.githubusercontent.com/u/54871916" width="50px;" style="border-radius: 100%;" alt="Luiz Carlos B Pereira"/><br>
       </a>
     </td>
   </tr>

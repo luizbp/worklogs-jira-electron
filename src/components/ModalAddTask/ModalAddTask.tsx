@@ -79,7 +79,7 @@ export const ModalAddTask = ({ handleClose, open }: ModalAddTaskParams) => {
 
     const newTask = {
       value: taskId.toUpperCase(),
-      label: `${taskId.toUpperCase()} - ${identificator}`,
+      label: identificator ? `${taskId.toUpperCase()} - ${identificator.toUpperCase()}` : `${taskId.toUpperCase()}`,
     }
 
     addData("task", newTask);

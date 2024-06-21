@@ -28,7 +28,7 @@ export const TableLogs = ({
   deleteWorkLog,
   loading,
 }: TableLogsParams) => {
-  const { registerWorkLogInJira, cloudIdSelected } = useJira();
+  const { registerWorkLogInJira, cloudIdSelected, userLogged } = useJira();
   const { getWorkLog } = useConfig();
 
   const getStartDateFormatted = (startDate: string) => {
@@ -60,6 +60,18 @@ export const TableLogs = ({
   };
 
   const registerWorkLogOnJira = (workLog: WorkLog) => {
+
+      if(!userLogged) {
+        Swal.fire({
+          title:
+            'Please first log in with Jira',
+          icon: "warning",
+        });
+
+        return
+      }
+
+
     Swal.fire({
       title: "Register on Jira?",
       showCancelButton: true,
@@ -146,7 +158,7 @@ export const TableLogs = ({
               <TableCell component="th" scope="row">
                 <p
                   className="action-click-clipboard"
-                  title="Copy hour to jira"
+                  title="Copy hour formatted for Jira"
                   onClick={() => {
                     navigator.clipboard.writeText(row.startDateFormatted);
                   }}
@@ -154,10 +166,10 @@ export const TableLogs = ({
                   {getStartDateFormatted(row.startDate)}
                 </p>
               </TableCell>
-              <TableCell>
+              <TableCell className="cell--task-number-box">
                 <p
                   className="action-click-clipboard"
-                  title="Copy to jira"
+                  title="Copy"
                   onClick={() => {
                     navigator.clipboard.writeText(row.task);
                   }}
@@ -168,7 +180,7 @@ export const TableLogs = ({
               <TableCell>
                 <p
                   className="action-click-clipboard"
-                  title="Copy to jira"
+                  title="Copy"
                   onClick={() => {
                     navigator.clipboard.writeText(row.description);
                   }}
@@ -179,7 +191,7 @@ export const TableLogs = ({
               <TableCell>
                 <p
                   className="action-click-clipboard"
-                  title="Copy to jira"
+                  title="Copy"
                   onClick={() => {
                     navigator.clipboard.writeText(row.time);
                   }}

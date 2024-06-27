@@ -226,7 +226,13 @@ const JiraProvider = ({ children }: any) => {
 
       Swal.fire({
         title: "Error in integration with Jira",
-        text: msg,
+        html: `
+          <p><b>Your work log was processed successfully</b>, but an error occurred when trying to post it to Jira, please try again in the work log window</p>
+          <p>
+            <b>Error message: </b><br/>
+            <span style="color: red;">${msg}</span>
+          </p>
+        `,
         icon: "error",
       }).then(() => {
         if (callbackIntegrationError) callbackIntegrationError();

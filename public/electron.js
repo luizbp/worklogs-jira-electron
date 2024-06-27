@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain } = require("electron");
+const { app, BrowserWindow, ipcMain, globalShortcut } = require("electron");
 const path = require("path");
 
 const isDev = require("electron-is-dev");
@@ -23,6 +23,7 @@ function createWindow() {
     minimizable: true,
     maximizable: true,
     webPreferences: {
+      devTools: isDev,
       backgroundThrottling: false,
       nodeIntegration: true,
       preload: path.join(__dirname, "preload.js"),
@@ -74,6 +75,8 @@ app.whenReady().then(() => {
   app.on("activate", () => {
     if (BrowserWindow.getAllWindows().length === 0) createWindow();
   });
+
+  globalShortcut.register('CommandOrControl+Shift+R', () => {})
 });
 
 // Quit when all windows are closed.

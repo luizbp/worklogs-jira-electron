@@ -76,11 +76,18 @@ app.whenReady().then(() => {
     if (BrowserWindow.getAllWindows().length === 0) createWindow();
   });
 
-  globalShortcut.register('CommandOrControl+Shift+R', () => {})
+  win.on('focus', () => {
+    globalShortcut.register('CommandOrControl+Shift+R', () => {})
+  })
+
+  win.on('blur', () => {
+    globalShortcut.unregister('CommandOrControl+Shift+R')
+  })
 });
 
 // Quit when all windows are closed.
 app.on('window-all-closed', () => {
+  globalShortcut.unregister('CommandOrControl+Shift+R')
   app.quit();
 });
 

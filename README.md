@@ -25,6 +25,9 @@ Baixe a versão desejada do aplicativo:
 - [Worklogs Jira Setup 0.8.2](https://rebrand.ly/bf9k4b6) `Latest`
 - [Outras versões](https://github.com/luizbp/worklogs-jira-electron/releases)
 
+### Mac
+- [Worklogs Jira Setup 0.8.2](https://rebrand.ly/4ql22cb) `Latest`
+
 Depois basta descompatar o arquivo `.rar` e executar o arquivo `Worklogs Jira Setup x.x.x.exe`
 
 ## 🎬 Como utilizar

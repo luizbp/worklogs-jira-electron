@@ -48,7 +48,7 @@ O cadastro de descrição é referente as descrições que ficam no registro de 
 
 Há duas possibilidades de lançar tempo gasto, sendo um pelo timer, onde disparamos o timer e quando clicamos em finalizar o apontamento é efetuado conforme o tempo percorrido e de forma manual;
 
-<img src="./assets/registerTime.gif" alt="Register Time"><br>
+<img src="./assets/registerTime2.gif" alt="Register Time"><br>
 
 ### Logar com o Jira e lançar apontamentos automaticamente com o Jira. - *A partir da versão 0.8.0*
 
